@@ -1,0 +1,27 @@
+{
+  "name": "synkronet",
+  "description": "Sitio web de SynkroNET preparado para entorno local con XAMPP",
+  "version": "1.0.0",
+  "private": false,
+  "scripts": {
+    "dev": "http-server -p 8080 -c-1",
+    "serve": "http-server -p 8080 -c-1"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tu-usuario/SynkroNET.git"
+  },
+  "keywords": [
+    "videojuegos",
+    "gaming",
+    "php",
+    "xampp"
+  ],
+  "author": "SynkroNET",
+  "license": "MIT"
+}
+
