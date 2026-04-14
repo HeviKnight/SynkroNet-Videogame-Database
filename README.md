@@ -2,12 +2,23 @@
 
 Plataforma web de videojuegos desarrollada con PHP, JavaScript y CSS, preparada para ejecutarse en entorno local con XAMPP y para publicarse en GitHub.
 
+Repositorio oficial: https://github.com/HeviKnight/SynkroNet-Videogame-Database
+
 ## Resumen
 
 - Frontend modular con componentes reutilizables
 - Estructura orientada a páginas PHP
 - Recursos estáticos organizados en carpetas dedicadas
 - Lista para colaboración y versionado en Git
+
+## Tecnologias utilizadas
+
+- PHP
+- JavaScript (vanilla)
+- CSS3
+- Bootstrap 5.3 (CDN)
+- Bootstrap Icons 1.11 (CDN)
+- Google Fonts (Jura y Orbitron)
 
 ## Estructura del proyecto
 
@@ -45,7 +56,7 @@ SynkroNET/
 
 ```bash
 cd C:/xampp/htdocs
-git clone https://github.com/TU-USUARIO/SynkroNET.git
+git clone https://github.com/HeviKnight/SynkroNet-Videogame-Database.git
 ```
 
 2. Inicia Apache desde el panel de XAMPP.
@@ -53,7 +64,7 @@ git clone https://github.com/TU-USUARIO/SynkroNET.git
 3. Abre el proyecto en el navegador:
 
 ```text
-http://localhost/SynkroNET
+http://localhost/SynkroNet-Videogame-Database
 ```
 
 ## Ejecucion alternativa (sin XAMPP)
@@ -73,23 +84,14 @@ http://localhost:8080
 
 ## Publicacion en GitHub
 
-1. Inicializa Git (si todavía no existe):
+1. Clona el repositorio:
 
 ```bash
-git init
-git add .
-git commit -m "chore: initial project setup"
+git clone https://github.com/HeviKnight/SynkroNet-Videogame-Database.git
+cd SynkroNet-Videogame-Database
 ```
 
-2. Crea un repositorio vacío en GitHub y conecta remoto:
-
-```bash
-git branch -M main
-git remote add origin https://github.com/TU-USUARIO/SynkroNET.git
-git push -u origin main
-```
-
-3. A partir de ese punto, flujo diario:
+2. Flujo diario de trabajo:
 
 ```bash
 git add .
@@ -115,5 +117,7 @@ En desarrollo activo.
 
 ## Licencia
 
-MIT
+Este proyecto está bajo licencia MIT.
+
+Consulta el archivo LICENSE para más información.
 

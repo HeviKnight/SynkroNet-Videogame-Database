@@ -13,8 +13,12 @@
   "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "https://github.com/tu-usuario/SynkroNET.git"
+    "url": "git+https://github.com/HeviKnight/SynkroNet-Videogame-Database.git"
   },
+  "bugs": {
+    "url": "https://github.com/HeviKnight/SynkroNet-Videogame-Database/issues"
+  },
+  "homepage": "https://github.com/HeviKnight/SynkroNet-Videogame-Database#readme",
   "keywords": [
     "videojuegos",
     "gaming",
