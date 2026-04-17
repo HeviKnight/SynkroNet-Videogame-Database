@@ -1,0 +1,8 @@
+# Linguist language overrides
+*.php linguist-language=PHP
+*.js linguist-language=JavaScript
+*.css linguist-language=CSS
+*.html linguist-language=HTML
+
+# Mark vendor/generated files if needed
+# node_modules/ linguist-vendored
