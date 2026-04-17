@@ -2,6 +2,7 @@
 $base_url = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
 $base_url = str_replace('/paginas', '', $base_url);
 include_once('../componentes/sidebar.php');
+include_once('../componentes/filter-component.php');
 ?>
 
 <!-- HEADER WITH GRADIENT TITLE -->
@@ -78,48 +79,18 @@ include_once('../componentes/sidebar.php');
 
                             <!-- Filter Options -->
                             <div style="padding: 5px 10px;">
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="hideLibrary" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);" checked>
-                                    <label for="hideLibrary" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">Ocultar mi biblioteca</label>
-                                </div>
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="personalProgress" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);" checked>
-                                    <label for="personalProgress" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">Progreso personal</label>
-                                    <button style="width: 10px; height: 10px; border: none; background: none; cursor: pointer; color: var(--base-ink); padding: 0;">
-                                        <i class="bi bi-chevron-up" style="font-size: 8px;"></i>
-                                    </button>
-                                </div>
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="reviewed" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);">
-                                    <label for="reviewed" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">Reseñados</label>
-                                </div>
+                                <?php renderFilterGroup('Ocultar mi biblioteca', [], 'hideLibrary', false, true); ?>
+                                <?php renderFilterGroup('Progreso personal', [], 'personalProgress', false, true); ?>
+                                <?php renderFilterGroup('Reseñados', [], 'reviewed', false, false); ?>
                             </div>
 
                             <div style="border-bottom: 1px solid white; margin: 5px;"></div>
 
                             <!-- Category Filters -->
                             <div style="padding: 5px 10px;">
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="categoriesFilter" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);">
-                                    <label for="categoriesFilter" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">Categorías</label>
-                                    <button style="width: 10px; height: 10px; border: none; background: none; cursor: pointer; color: var(--base-ink); padding: 0;">
-                                        <i class="bi bi-chevron-up" style="font-size: 8px;"></i>
-                                    </button>
-                                </div>
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="genresFilter" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);">
-                                    <label for="genresFilter" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">Géneros</label>
-                                    <button style="width: 10px; height: 10px; border: none; background: none; cursor: pointer; color: var(--base-ink); padding: 0;">
-                                        <i class="bi bi-chevron-up" style="font-size: 8px;"></i>
-                                    </button>
-                                </div>
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="platformsFilter" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);">
-                                    <label for="platformsFilter" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">Plataformas</label>
-                                    <button style="width: 10px; height: 10px; border: none; background: none; cursor: pointer; color: var(--base-ink); padding: 0;">
-                                        <i class="bi bi-chevron-up" style="font-size: 8px;"></i>
-                                    </button>
-                                </div>
+                                <?php renderFilterGroup('Categorías', ['Acción', 'RPG', 'Aventura', 'Puzzle', 'Estrategia', 'Simulación'], 'categoriesFilter', true); ?>
+                                <?php renderFilterGroup('Géneros', ['Arcade', 'Indie', 'Casual', 'Racing', 'Deporte', 'Horror'], 'genresFilter', true); ?>
+                                <?php renderFilterGroup('Plataformas', ['PC', 'PlayStation', 'Xbox', 'Nintendo', 'Mobile'], 'platformsFilter', true); ?>
                             </div>
                         </div>
                     </div>

@@ -2,6 +2,7 @@
 $base_url = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
 $base_url = str_replace('/paginas', '', $base_url);
 include_once('../componentes/sidebar.php');
+include_once('../componentes/filter-component.php');
 ?>
 
 <!-- HEADER WITH GRADIENT TITLE -->
@@ -58,7 +59,7 @@ include_once('../componentes/sidebar.php');
             </div>
 
             <div class="search-grid-filters">
-                    <!-- Price Slider -->
+                    <!-- Date Slider -->
                             <div style="padding: 5px 10px;">
                                 <label style="font-size: 12px; color: white; font-weight: bold; display: block; margin-bottom: 8px;">Rango de fecha</label>
                                 <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -78,48 +79,18 @@ include_once('../componentes/sidebar.php');
 
                             <!-- Filter Options -->
                             <div style="padding: 5px 10px;">
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="featured" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);" checked>
-                                    <label for="featured" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">Destacadas</label>
-                                </div>
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="trending" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);" checked>
-                                    <label for="trending" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">Tendencias</label>
-                                    <button style="width: 10px; height: 10px; border: none; background: none; cursor: pointer; color: var(--base-ink); padding: 0;">
-                                        <i class="bi bi-chevron-up" style="font-size: 8px;"></i>
-                                    </button>
-                                </div>
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="commented" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);">
-                                    <label for="commented" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">Comentadas</label>
-                                </div>
+                                <?php renderFilterGroup('Destacadas', [], 'featured', false, true); ?>
+                                <?php renderFilterGroup('Tendencias', [], 'trending', false, true); ?>
+                                <?php renderFilterGroup('Comentadas', [], 'commented', false, false); ?>
                             </div>
 
                             <div style="border-bottom: 1px solid white; margin: 5px;"></div>
 
                             <!-- Category Filters -->
                             <div style="padding: 5px 10px;">
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="newsCategories" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);">
-                                    <label for="newsCategories" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">Categorías</label>
-                                    <button style="width: 10px; height: 10px; border: none; background: none; cursor: pointer; color: var(--base-ink); padding: 0;">
-                                        <i class="bi bi-chevron-up" style="font-size: 8px;"></i>
-                                    </button>
-                                </div>
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="newsAuthors" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);">
-                                    <label for="newsAuthors" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">Autores</label>
-                                    <button style="width: 10px; height: 10px; border: none; background: none; cursor: pointer; color: var(--base-ink); padding: 0;">
-                                        <i class="bi bi-chevron-up" style="font-size: 8px;"></i>
-                                    </button>
-                                </div>
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="newsTags" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);">
-                                    <label for="newsTags" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">Etiquetas</label>
-                                    <button style="width: 10px; height: 10px; border: none; background: none; cursor: pointer; color: var(--base-ink); padding: 0;">
-                                        <i class="bi bi-chevron-up" style="font-size: 8px;"></i>
-                                    </button>
-                                </div>
+                                <?php renderFilterGroup('Categorías', ['Gaming', 'Esports', 'Indie', 'Conferencias', 'Lanzamientos', 'Actualizaciones'], 'newsCategories', true); ?>
+                                <?php renderFilterGroup('Autores', ['Redacción', 'Colaboradores', 'Expertos', 'Influencers'], 'newsAuthors', true); ?>
+                                <?php renderFilterGroup('Etiquetas', ['2024', '2025', 'PC', 'Consolas', 'Mobile'], 'newsTags', true); ?>
                             </div>
                         </div>
                     </div>

@@ -2,6 +2,7 @@
 $base_url = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
 $base_url = str_replace('/paginas', '', $base_url);
 include_once('../componentes/sidebar.php');
+include_once('../componentes/filter-component.php');
 ?>
 
 <!-- HEADER WITH GRADIENT TITLE -->
@@ -58,7 +59,7 @@ include_once('../componentes/sidebar.php');
             </div>
 
             <div class="search-grid-filters">
-                    <!-- Date Range -->
+                    <!-- Experience Range -->
                             <div style="padding: 5px 10px;">
                                 <label style="font-size: 12px; color: white; font-weight: bold; display: block; margin-bottom: 8px;">Rango de experiencia</label>
                                 <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -78,48 +79,18 @@ include_once('../componentes/sidebar.php');
 
                             <!-- Filter Options -->
                             <div style="padding: 5px 10px;">
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="independent" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);" checked>
-                                    <label for="independent" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">Desarrolladores Independientes</label>
-                                </div>
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="studios" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);" checked>
-                                    <label for="studios" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">Estudios</label>
-                                    <button style="width: 10px; height: 10px; border: none; background: none; cursor: pointer; color: var(--base-ink); padding: 0;">
-                                        <i class="bi bi-chevron-up" style="font-size: 8px;"></i>
-                                    </button>
-                                </div>
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="verified" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);">
-                                    <label for="verified" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">Verificados</label>
-                                </div>
+                                <?php renderFilterGroup('Desarrolladores Independientes', [], 'independent', false, true); ?>
+                                <?php renderFilterGroup('Estudios', [], 'studios', false, true); ?>
+                                <?php renderFilterGroup('Verificados', [], 'verified', false, false); ?>
                             </div>
 
                             <div style="border-bottom: 1px solid white; margin: 5px;"></div>
 
                             <!-- Category Filters -->
                             <div style="padding: 5px 10px;">
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="specialities" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);">
-                                    <label for="specialities" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">Especialidades</label>
-                                    <button style="width: 10px; height: 10px; border: none; background: none; cursor: pointer; color: var(--base-ink); padding: 0;">
-                                        <i class="bi bi-chevron-up" style="font-size: 8px;"></i>
-                                    </button>
-                                </div>
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="countries" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);">
-                                    <label for="countries" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">País</label>
-                                    <button style="width: 10px; height: 10px; border: none; background: none; cursor: pointer; color: var(--base-ink); padding: 0;">
-                                        <i class="bi bi-chevron-up" style="font-size: 8px;"></i>
-                                    </button>
-                                </div>
-                                <div style="background-color: white; border-radius: 6px; padding: 5px; display: flex; gap: 5px; align-items: center; margin-bottom: 10px;">
-                                    <input type="checkbox" id="genres" style="width: 12px; height: 12px; accent-color: var(--base-Turquoise-main);">
-                                    <label for="genres" style="font-size: 11px; color: var(--base-ink); cursor: pointer; flex: 1; margin: 0;">Géneros</label>
-                                    <button style="width: 10px; height: 10px; border: none; background: none; cursor: pointer; color: var(--base-ink); padding: 0;">
-                                        <i class="bi bi-chevron-up" style="font-size: 8px;"></i>
-                                    </button>
-                                </div>
+                                <?php renderFilterGroup('Especialidades', ['Programación', 'Arte', 'Diseño', 'Sonido', 'Narrativa', 'Producción'], 'specialities', true); ?>
+                                <?php renderFilterGroup('País', ['España', 'Argentina', 'México', 'USA', 'Japón', 'Canadá'], 'countries', true); ?>
+                                <?php renderFilterGroup('Géneros', ['RPG', 'Shooter', 'Estrategia', 'Aventura', 'Simulación', 'Deportes'], 'genres', true); ?>
                             </div>
                         </div>
                     </div>
