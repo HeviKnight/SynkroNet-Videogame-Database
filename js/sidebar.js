@@ -8,6 +8,7 @@ const SidebarModule = (() => {
         toggleSidebarBtn: null,
         collapseSidebarBtn: null,
         mainContent: null,
+        headerGames: null,
         btnLogin: null,
         btnLogout: null,
         footerGuest: null,
@@ -28,6 +29,7 @@ const SidebarModule = (() => {
         cache.toggleSidebarBtn = document.getElementById('toggle-sidebar');
         cache.collapseSidebarBtn = document.getElementById('collapse-sidebar');
         cache.mainContent = document.getElementById('main-content');
+        cache.headerGames = document.querySelector('.header-games');
         cache.btnLogin = document.getElementById('btnLogin');
         cache.btnLogout = document.getElementById('btnLogout');
         cache.footerGuest = document.getElementById('footerGuest');
@@ -79,6 +81,9 @@ const SidebarModule = (() => {
         cache.collapseSidebarBtn.addEventListener('click', () => {
             cache.sidebar.classList.toggle('collapsed');
             cache.mainContent.classList.toggle('sidebar-collapsed');
+            if (cache.headerGames) {
+                cache.headerGames.classList.toggle('sidebar-collapsed');
+            }
         });
     };
 
@@ -180,6 +185,9 @@ const SidebarModule = (() => {
                 if (cache.sidebar.classList.contains('collapsed')) {
                     cache.sidebar.classList.remove('collapsed');
                     cache.mainContent.classList.remove('sidebar-collapsed');
+                    if (cache.headerGames) {
+                        cache.headerGames.classList.remove('sidebar-collapsed');
+                    }
                 }
                 
                 // Cambiar a estado autenticado
@@ -208,6 +216,9 @@ const SidebarModule = (() => {
             if (cache.sidebar.classList.contains('collapsed')) {
                 cache.sidebar.classList.remove('collapsed');
                 cache.mainContent.classList.remove('sidebar-collapsed');
+                if (cache.headerGames) {
+                    cache.headerGames.classList.remove('sidebar-collapsed');
+                }
             }
         });
     };

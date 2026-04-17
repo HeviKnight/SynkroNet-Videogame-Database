@@ -79,6 +79,7 @@
 
     /* Utilities */
     --transition: 0.3s ease-in-out;
+    --transition-fast: 0.1s ease-in-out;
     
     /* Shadow System */
     --shadow-sidebar: 2px -2px 16px rgba(0, 0, 0, 0.3);
@@ -1067,6 +1068,8 @@ body, html {
                 gap: 4px;
                 font-size: 0.625rem;
                 font-weight: 800;
+                white-space: nowrap;
+                overflow: hidden;
                 .bi-star-fill{
                     color: var(--base-Turquoise-main);
                     margin-right: 4px;
@@ -1455,7 +1458,7 @@ body, html {
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
-    transition: all var(--transition);
+    transition: all var(--transition-fast);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1530,6 +1533,99 @@ body, html {
     background-color: var(--primary);
     border-radius: var(--border-radius-pill);
     padding: 2px 8px;
+}
+
+/* ============================================================================
+   COMPONENTES GLOBALES - Inputs y Formularios
+   ============================================================================ */
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+.form-control {
+    padding: 12px 16px;
+    border: none;
+    border-radius: var(--border-radius-pill);
+    background-color: var(--base-white);
+    font-size: 0.95rem;
+    color: var(--text-main);
+    transition: all var(--transition-fast);
+    outline: none;
+
+    &::placeholder {
+        color: var(--text-muted);
+    }
+
+    &:hover {
+        background-color: var(--base-gray-200);
+    }
+
+    &:focus {
+        background-color: var(--base-sky-light);
+    }
+
+    &:active {
+        background-color: var(--base-sky-main);
+    }
+}
+
+/* Estado deshabilitado */
+input:disabled,
+.form-control:disabled {
+    background-color: var(--bg-surface);
+    color: var(--text-muted);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Select dropdowns */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 20px;
+    padding-right: 32px;
+}
+
+/* Select Dark (similar a btn-dark) */
+select.select-dark {
+    padding: 12px 16px;
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: var(--bg-pill-dark);
+    color: var(--text-inverse);
+    font-size: 0.95rem;
+    transition: all var(--transition-fast);
+    outline: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 150px;
+
+    &:hover {
+        background-color: var(--base-ink-light);
+        color: var(--base-white);
+    }
+
+    &:focus {
+        background-color: var(--base-ink-light);
+        color: var(--base-white);
+    }
+
+    &:active {
+        background-color: var(--base-ink-dark);
+    }
+
+    option {
+        background-color: var(--bg-pill-dark);
+        color: var(--text-inverse);
+    }
 }
 
 /* ============================================================================
@@ -1810,6 +1906,180 @@ body, html {
     }
 }
 
+/* ============================================================================
+   CABECERA DE VIDEOJUEGOS - Header con Gradiente de Colores
+   ============================================================================ */
+
+.header-games {
+    height: 200px;
+    background-color: var(--bg-base);
+    border-bottom: 2px solid var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: var(--spacing-lg, 20px);
+    padding-left: 40px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    margin-left: var(--sidebar-width-expanded);
+    width: calc(100% - var(--sidebar-width-expanded));
+    box-sizing: border-box;
+    transition: var(--transition);
+
+    &.sidebar-collapsed {
+        margin-left: var(--sidebar-width-collapsed);
+        width: calc(100% - var(--sidebar-width-collapsed));
+    }
+}
+
+.header-games-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 128px;
+    font-weight: 900;
+    margin: 0;
+    color: transparent;
+    background: conic-gradient(
+        from 90deg,
+        rgb(255, 0, 0) 0%,
+        rgb(0, 255, 0) 38.942%,
+        rgb(0, 60, 255) 79.327%,
+        rgb(255, 0, 0) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+    .header-games {
+        height: 150px;
+        padding: 16px;
+        margin-left: var(--sidebar-width-expanded);
+        width: calc(100% - var(--sidebar-width-expanded));
+
+        &.sidebar-collapsed {
+            margin-left: var(--sidebar-width-collapsed);
+            width: calc(100% - var(--sidebar-width-collapsed));
+        }
+    }
+    
+    .header-games-title {
+        font-size: 80px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-games {
+        height: 120px;
+        padding: 12px;
+        margin-left: 0;
+        width: 100%;
+
+        &.sidebar-collapsed {
+            margin-left: 0;
+            width: 100%;
+        }
+    }
+    
+    .header-games-title {
+        font-size: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-games {
+        height: 100px;
+        padding: 10px;
+        margin-left: 0;
+        width: 100%;
+
+        &.sidebar-collapsed {
+            margin-left: 0;
+            width: 100%;
+        }
+    }
+    
+    .header-games-title {
+        font-size: 48px;
+    }
+}
+
+/* ============================================================================
+   SEARCH GRID - Sección de Juegos y Filtros
+   ============================================================================ */
+
+.search-grid {
+    display: flex;
+    gap: 24px;
+    padding: 0;
+    margin-bottom: 32px;
+}
+
+.search-grid-games {
+    flex: 0 0 calc(75% - 12px);
+    padding: 24px 4px;
+    background-color: var(--primary);
+    border-radius: 16px;
+}
+
+.games-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    justify-content: center;
+}
+
+.games-grid > div {
+    flex: 0 0 calc(33.333% - 8px);
+}
+
+.search-grid-filters {
+    flex: 0 0 calc(25% - 12px);
+    background-color: var(--base-Turquoise-main);
+    border-radius: 16px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.filters-container {
+    width: 100%;
+}
+
+@media (max-width: 1024px) {
+    .search-grid-games {
+        flex: 0 0 calc(66% - 12px);
+    }
+
+    .games-grid > div {
+        flex: 0 0 calc(50% - 8px);
+    }
+
+    .search-grid-filters {
+        flex: 0 0 calc(34% - 12px);
+    }
+}
+
+@media (max-width: 768px) {
+    .search-grid {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .search-grid-games,
+    .search-grid-filters {
+        flex: 0 0 100%;
+    }
+
+    .games-grid > div {
+        flex: 0 0 calc(50% - 8px);
+    }
+}
+
 @media (prefers-color-scheme: dark) {
     :root {
         --bg-base: var(--base-ink-dark);
@@ -1820,4 +2090,77 @@ body, html {
         --text-inverse: var(--base-ink-dark);
         --border-color: var(--base-gray-600);
     }
+}
+
+/* ============================================================================
+   PRICE RANGE SLIDER STYLES
+   ============================================================================ */
+
+input[type="range"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 100px;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Track styling */
+input[type="range"]::-webkit-slider-runnable-track {
+    background: #333;
+    height: 4px;
+    border-radius: 100px;
+}
+
+input[type="range"]::-moz-range-track {
+    background: #333;
+    height: 4px;
+    border-radius: 100px;
+    border: none;
+}
+
+/* Thumb styling para webkit (Chrome, Safari, Edge) */
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--base-sky-main);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    border: 3px solid white;
+    margin-top: -9px;
+    transition: all 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* Thumb styling para Firefox */
+input[type="range"]::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--base-sky-main);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    border: 3px solid white;
+    transition: all 0.2s ease;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+    transform: scale(1.15);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+#priceMax {
+    background: linear-gradient(to right, var(--base-sky-main) 0%, var(--base-sky-main) 50%, #333 50%, #333 100%);
+}
+
+#priceMin {
+    background: transparent;
 }

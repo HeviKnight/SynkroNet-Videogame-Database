@@ -3,14 +3,6 @@ $base_url = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/')
 include_once("componentes/sidebar.php");
 ?>
 
-<!-- Menu hamburguesa movil -->
-<button id="toggle-sidebar" class="btn-toggle-sidebar" title="Abrir menú">
-    <i class="bi bi-list"></i>
-</button>
-
-<!-- Header móvil - Solo visible en dispositivos móviles -->
-<div class="mobile-nav-header"></div>
-
     <main id="home">
         <section id="main-content" class="main-content">
             <section class="section-hero" id="hero-section">
@@ -66,100 +58,9 @@ include_once("componentes/sidebar.php");
                 </div>
             </section>
 
-            <section class="section-A games-module" id="games-section">
-                <div class="section-buttons">
-                    <div>
-                        <button class="btn btn-dark active">Popular</button>
-                        <button class="btn btn-dark">Nuevo</button>
-                        <button class="btn btn-dark">Destacados</button>
-                    </div>
-                    <h2 class="section-title">Juegos de la semana</h2>
-                </div>
-                <div class="card-content container">
-                    <!-- ═══════════════════════════════════════════════════
-                         ► JUEGOS DE LA SEMANA
-                         ═════════════════════════════════════════════════ -->
-                    <!-- Contenido a completar en js -->
-                    <div class="row g-2">
-                        <div class="col-lg-3 col-sm-6">
-                            <div class="card-game">
-                            <div>
-                                <span><i class="bi bi-box-arrow-up-right"></i></span>
-                            </div>
-                            <img src="https://picsum.photos/300/150" class="img-fluid" alt="Game">
-                            <div>
-                                <div class="tags">
-                                    <div class="card-tag"><i class="bi bi-star-fill"></i>8</span> </div>
-                                    <div class="card-tag">Indie</div>
-                                    <div class="card-tag">Cooperativo</div>
-                                    <div class="card-tag">Aventura</div>
-                                </div>
-                                <div>
-                                    <img src="https://picsum.photos/200/?random=3" alt="Studio">
-                                    <h5>Título Videojuego very largo and truncated in a very human way
-                                    </h5>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="section-footer">
-                    <div class="section-dots">
-                        <button class="dot active" data-tab="0"></button>
-                        <button class="dot" data-tab="1"></button>
-                        <button class="dot" data-tab="2"></button>
-                    </div>
-                    <button class="btn btn-dark">Ver más destacados</button>
-                </div>
-            </section>
+            <?php include_once("componentes/games-section.php"); ?>
 
-            <section class="section-A devs-module" id="developers-section">
-                <div class="section-buttons">
-                    <div>
-                        <button class="btn btn-dark active">Devs</button>
-                        <button class="btn btn-dark">Estudios</button>
-                        <button class="btn btn-dark">Creadores de contenido</button>
-                    </div>
-                    <h2 class="section-title">Desarrolladores de la semana</h2>
-                </div>
-
-                <div class="card-content container">
-                    <!-- ═══════════════════════════════════════════════════
-                         ► DESARROLLADORES DE LA SEMANA
-                         ═════════════════════════════════════════════════ -->
-                    <div class="row g-2">
-                        <div class="col-lg-2 col-sm-4">
-                            <div class="card-dev">
-                            <div>
-                                <span><i class="bi bi-box-arrow-up-right"></i></span>
-                            </div>
-                            <img src="https://picsum.photos/150/200" class="img-fluid" alt="Game">
-                            <div>
-                                <div>
-                                    <Span>Featured Game</Span>
-                                </div>
-                                <div>
-                                    <h5>Título Videojuego very largo and truncated in a very human way
-                                    </h5>
-                                    <p>Job</p>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                </div>
-
-                <div class="section-footer">
-                    <div class="section-dots">
-                        <button class="dot active" data-tab="0"></button>
-                        <button class="dot" data-tab="1"></button>
-                        <button class="dot" data-tab="2"></button>
-                    </div>
-                    <button class="btn btn-dark">Ver más desarrolladores</button>
-                </div>
-            </section>
+            <?php include_once("componentes/developers-section.php"); ?>
 
             <section class="section-B" id="releases-section">
                 <div class="section-buttons">
@@ -207,45 +108,7 @@ include_once("componentes/sidebar.php");
                 </div>
             </section>
 
-            <section class="section-B" id="news-section">
-                <div class="section-buttons">
-                    <div>
-                        <h2 class="section-title">Noticias</h2>
-                    </div>
-                </div>
-
-                <div class="card-content container">
-                    <!-- ═══════════════════════════════════════════════════
-                         ► NOTICIAS
-                         ═════════════════════════════════════════════════ -->
-                    <div class="row g-4">
-                        
-                        <div class="col-lg-4 col-md-6 col-12">
-                            <div class="news-card">
-                                <div>
-                                    <h4>Título de la noticia con un texto muy largo para ver el truncado Título de la noticia con un texto muy largo para ver el truncado</h4>
-                                    <div>
-                                        <span class="card-tag-inverse">Indie</span>
-                                        <span class="card-tag-inverse">GameAwards</span>
-                                        <span class="card-tag-inverse">2025</span>
-                                    </div>
-                                    <p>Tiempo de lectura: 5 min · Redacción</p>
-                                </div>
-                                <img src="https://picsum.photos/400/400?random=18" alt="Noticia">
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="section-footer">
-                    <div class="section-dots">
-                        <button class="dot active" data-tab="0"></button>
-                        <button class="dot" data-tab="1"></button>
-                        <button class="dot" data-tab="2"></button>
-                    </div>
-                    <button class="btn btn-dark">Ver más noticias</button>
-                </div>
-            </section>
+            <?php include_once("componentes/news-section.php"); ?>
 
             <section class="section-B" id="community-section">
                 <div class="section-buttons">

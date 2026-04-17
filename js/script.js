@@ -34,6 +34,7 @@ const gamesSection = (() => {
     return {
         init: () => {
             initCache();
+            if (!cache.container) return; // Salir si no existe el elemento
             selectButtons(cache.buttons, cache.container, createList);
             cache.container.innerHTML = '';
             createList('Popular');
@@ -65,6 +66,7 @@ const devsSection = (() => {
     return {
         init: () => {
             initCache();
+            if (!cache.container) return; // Salir si no existe el elemento
             selectButtons(cache.buttons, cache.container, createList);
             cache.container.innerHTML = '';
             createList('Devs');
@@ -94,6 +96,7 @@ const releasesSection = (() => {
     return {
         init: () => {
             initCache();
+            if (!cache.container) return; // Salir si no existe el elemento
             cache.container.innerHTML = '';
             createList('Upcoming');
         }
@@ -122,6 +125,7 @@ const newsSection = (() => {
     return {
         init: () => {
             initCache();
+            if (!cache.container) return; // Salir si no existe el elemento
             cache.container.innerHTML = '';
             createList('News');
         }
@@ -150,9 +154,93 @@ const communitySection = (() => {
     return {
         init: () => {
             initCache();
+            if (!cache.container) return; // Salir si no existe el elemento
             cache.container.innerHTML = '';
             createList('Hilos populares');
         }
+    };
+})();
+
+// ============================================
+// GAMES GRID SECTION  
+// ============================================
+
+const gamesGridSection = (() => {
+    const cache = {
+        container: null
+    };
+
+    const initCache = () => {
+        cache.container = document.querySelector('.search-grid-games .games-grid');
+    };
+
+    const createList = (titleName) => {
+        if (!cache.container) {
+            return;
+        }
+        for (let i = 0; i < 6; i++) {
+            cache.container.insertAdjacentHTML('beforeend', createGameCard(titleName));
+        }
+    };
+
+    return {
+        init: () => {
+            initCache();
+            if (cache.container) {
+                cache.container.innerHTML = '';
+                createList('GamesList');
+            }
+        }
+    };
+})();
+
+// ============================================
+// FILTERS
+// ============================================
+// PRICE RANGE SLIDER ========================
+
+const priceSlider = (() => {
+    const initSliders = () => {
+        const priceMin = document.getElementById('priceMin');
+        const priceMax = document.getElementById('priceMax');
+        const minPriceDisplay = document.getElementById('minPrice');
+        const maxPriceDisplay = document.getElementById('maxPrice');
+
+        if (!priceMin || !priceMax) return;
+
+        const updateSliderBackground = () => {
+            const minVal = parseInt(priceMin.value);
+            const maxVal = parseInt(priceMax.value);
+            const minPercent = (minVal / 100) * 100;
+            const maxPercent = (maxVal / 100) * 100;
+
+            // Actualizar priceMax background
+            priceMax.style.background = `linear-gradient(to right, var(--base-sky-main) 0%, var(--base-sky-main) ${minPercent}%, #333 ${minPercent}%, #333 ${maxPercent}%, var(--base-sky-main) ${maxPercent}%, var(--base-sky-main) 100%)`;
+
+            minPriceDisplay.textContent = minVal;
+            maxPriceDisplay.textContent = maxVal;
+        };
+
+        priceMin.addEventListener('input', () => {
+            if (parseInt(priceMin.value) > parseInt(priceMax.value)) {
+                priceMin.value = priceMax.value;
+            }
+            updateSliderBackground();
+        });
+
+        priceMax.addEventListener('input', () => {
+            if (parseInt(priceMax.value) < parseInt(priceMin.value)) {
+                priceMax.value = priceMin.value;
+            }
+            updateSliderBackground();
+        });
+
+        // Inicializar el background
+        updateSliderBackground();
+    };
+
+    return {
+        init: initSliders
     };
 })();
 
@@ -166,6 +254,8 @@ document.addEventListener('DOMContentLoaded', () => {
     releasesSection.init();
     newsSection.init();
     communitySection.init();
+    gamesGridSection.init();
+    priceSlider.init();
 });
 
 

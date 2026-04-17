@@ -115,6 +115,14 @@
     
     <!-- Overlay para cerrar sidebar en mobile -->
     <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+    <!-- Menu hamburguesa movil -->
+    <button id="toggle-sidebar" class="btn-toggle-sidebar" title="Abrir menú">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <!-- Header móvil - Solo visible en dispositivos móviles -->
+    <div class="mobile-nav-header"></div>
     
     <!-- Módulo Sidebar - Consolidado (replaza sidebar-toggle.js y script.js sidebar logic) -->
     <script src="<?php echo $base_url; ?>/js/sidebar.js"></script>
