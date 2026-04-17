@@ -195,6 +195,72 @@ const gamesGridSection = (() => {
 })();
 
 // ============================================
+// NEWS GRID SECTION  
+// ============================================
+
+const newsGridSection = (() => {
+    const cache = {
+        container: null
+    };
+
+    const initCache = () => {
+        cache.container = document.querySelector('#news-grid');
+    };
+
+    const createList = () => {
+        if (!cache.container) {
+            return;
+        }
+        for (let i = 0; i < 6; i++) {
+            cache.container.insertAdjacentHTML('beforeend', createNewsCard('Noticia ' + (i + 1)));
+        }
+    };
+
+    return {
+        init: () => {
+            initCache();
+            if (cache.container) {
+                cache.container.innerHTML = '';
+                createList();
+            }
+        }
+    };
+})();
+
+// ============================================
+// DEVS GRID SECTION  
+// ============================================
+
+const devsGridSection = (() => {
+    const cache = {
+        container: null
+    };
+
+    const initCache = () => {
+        cache.container = document.querySelector('#devs-grid');
+    };
+
+    const createList = () => {
+        if (!cache.container) {
+            return;
+        }
+        for (let i = 0; i < 6; i++) {
+            cache.container.insertAdjacentHTML('beforeend', createDeveloperCard('Developer ' + (i + 1), 'Game Designer'));
+        }
+    };
+
+    return {
+        init: () => {
+            initCache();
+            if (cache.container) {
+                cache.container.innerHTML = '';
+                createList();
+            }
+        }
+    };
+})();
+
+// ============================================
 // FILTERS
 // ============================================
 // PRICE RANGE SLIDER ========================
@@ -245,6 +311,100 @@ const priceSlider = (() => {
 })();
 
 // ============================================
+// DATE RANGE SLIDER (NEWS PAGE)
+// ============================================
+
+const dateSlider = (() => {
+    const initSliders = () => {
+        const dateMin = document.getElementById('dateMin');
+        const dateMax = document.getElementById('dateMax');
+        const minDateDisplay = document.getElementById('minDate');
+        const maxDateDisplay = document.getElementById('maxDate');
+
+        if (!dateMin || !dateMax) return;
+
+        const updateSliderBackground = () => {
+            const minVal = parseInt(dateMin.value);
+            const maxVal = parseInt(dateMax.value);
+            const minPercent = (minVal / 100) * 100;
+            const maxPercent = (maxVal / 100) * 100;
+
+            dateMax.style.background = `linear-gradient(to right, var(--base-sky-main) 0%, var(--base-sky-main) ${minPercent}%, #333 ${minPercent}%, #333 ${maxPercent}%, var(--base-sky-main) ${maxPercent}%, var(--base-sky-main) 100%)`;
+
+            minDateDisplay.textContent = minVal;
+            maxDateDisplay.textContent = maxVal;
+        };
+
+        dateMin.addEventListener('input', () => {
+            if (parseInt(dateMin.value) > parseInt(dateMax.value)) {
+                dateMin.value = dateMax.value;
+            }
+            updateSliderBackground();
+        });
+
+        dateMax.addEventListener('input', () => {
+            if (parseInt(dateMax.value) < parseInt(dateMin.value)) {
+                dateMax.value = dateMin.value;
+            }
+            updateSliderBackground();
+        });
+
+        updateSliderBackground();
+    };
+
+    return {
+        init: initSliders
+    };
+})();
+
+// ============================================
+// EXPERIENCE RANGE SLIDER (DEVS PAGE)
+// ============================================
+
+const expSlider = (() => {
+    const initSliders = () => {
+        const expMin = document.getElementById('expMin');
+        const expMax = document.getElementById('expMax');
+        const minExpDisplay = document.getElementById('minExp');
+        const maxExpDisplay = document.getElementById('maxExp');
+
+        if (!expMin || !expMax) return;
+
+        const updateSliderBackground = () => {
+            const minVal = parseInt(expMin.value);
+            const maxVal = parseInt(expMax.value);
+            const minPercent = (minVal / 100) * 100;
+            const maxPercent = (maxVal / 100) * 100;
+
+            expMax.style.background = `linear-gradient(to right, var(--base-sky-main) 0%, var(--base-sky-main) ${minPercent}%, #333 ${minPercent}%, #333 ${maxPercent}%, var(--base-sky-main) ${maxPercent}%, var(--base-sky-main) 100%)`;
+
+            minExpDisplay.textContent = minVal;
+            maxExpDisplay.textContent = maxVal;
+        };
+
+        expMin.addEventListener('input', () => {
+            if (parseInt(expMin.value) > parseInt(expMax.value)) {
+                expMin.value = expMax.value;
+            }
+            updateSliderBackground();
+        });
+
+        expMax.addEventListener('input', () => {
+            if (parseInt(expMax.value) < parseInt(expMin.value)) {
+                expMax.value = expMin.value;
+            }
+            updateSliderBackground();
+        });
+
+        updateSliderBackground();
+    };
+
+    return {
+        init: initSliders
+    };
+})();
+
+// ============================================
 // INICIALIZACIÓN
 // ============================================
 
@@ -255,7 +415,11 @@ document.addEventListener('DOMContentLoaded', () => {
     newsSection.init();
     communitySection.init();
     gamesGridSection.init();
+    newsGridSection.init();
+    devsGridSection.init();
     priceSlider.init();
+    dateSlider.init();
+    expSlider.init();
 });
 
 
