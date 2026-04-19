@@ -50,8 +50,8 @@ include_once("componentes/sidebar.php");
                     </div>
                     
                     <div class="hero-actions">
-                        <button class="btn btn-primary">Quizz diario</button>
-                        <button class="btn btn-dark">
+                        <button class="btn-b btn-primary">Quizz diario</button>
+                        <button class="btn-b btn-dark">
                             Ficha del juego <i class="bi bi-box-arrow-up-right"></i>
                         </button>
                     </div>

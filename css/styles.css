@@ -571,7 +571,8 @@ body, html {
     margin: 0;
     width: 100%;
     transition: var(--transition);
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
 }
@@ -956,14 +957,9 @@ body, html {
             gap: 1rem;
             flex-wrap: wrap;
 
-            .btn {
+            .btn-b {
                 flex: 1;
                 min-width: 150px;
-                transition: all var(--transition, 0.3s ease);
-
-                &:hover {
-                    transform: translateY(-2px);
-                }
             }
         }
     }
@@ -1475,6 +1471,34 @@ body, html {
     }
 }
 
+/* Componentes - Botón con efecto traslación */
+.btn-b {
+    padding: 6px 12px;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+    text-decoration: none;
+
+    &:hover {
+        transform: translateY(-2px);
+        scale: 1.05;
+        box-shadow: var(--shadow-mg);
+    }
+
+    &:active {
+        transform: translateY(0px);
+        scale: 1;
+    }
+}
+
 /* Componentes - Botón Primario */
 .btn-primary {
     background-color: var(--primary);
@@ -1626,6 +1650,334 @@ select.select-dark {
         background-color: var(--bg-pill-dark);
         color: var(--text-inverse);
     }
+}
+
+/* ============================================================================
+   CABECERA DE VIDEOJUEGOS - Header con Gradiente de Colores
+   ============================================================================ */
+
+.header-games {
+    height: 200px;
+    background-color: var(--bg-base);
+    border-bottom: 2px solid var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: var(--spacing-lg, 20px);
+    padding-left: 40px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    margin-left: var(--sidebar-width-expanded);
+    width: calc(100% - var(--sidebar-width-expanded));
+    box-sizing: border-box;
+    transition: var(--transition);
+
+    &.sidebar-collapsed {
+        margin-left: var(--sidebar-width-collapsed);
+        width: calc(100% - var(--sidebar-width-collapsed));
+    }
+}
+
+.header-games-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 128px;
+    font-weight: 900;
+    margin: 0;
+    color: transparent;
+    background: conic-gradient(
+        from 90deg,
+        rgb(255, 0, 0) 0%,
+        rgb(0, 255, 0) 38.942%,
+        rgb(0, 60, 255) 79.327%,
+        rgb(255, 0, 0) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+    .header-games {
+        height: 150px;
+        padding: 16px;
+        margin-left: var(--sidebar-width-expanded);
+        width: calc(100% - var(--sidebar-width-expanded));
+
+        &.sidebar-collapsed {
+            margin-left: var(--sidebar-width-collapsed);
+            width: calc(100% - var(--sidebar-width-collapsed));
+        }
+    }
+    
+    .header-games-title {
+        font-size: 80px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-games {
+        height: 120px;
+        padding: 12px;
+        margin-left: 0;
+        width: 100%;
+
+        &.sidebar-collapsed {
+            margin-left: 0;
+            width: 100%;
+        }
+    }
+    
+    .header-games-title {
+        font-size: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-games {
+        height: 100px;
+        padding: 10px;
+        margin-left: 0;
+        width: 100%;
+
+        &.sidebar-collapsed {
+            margin-left: 0;
+            width: 100%;
+        }
+    }
+    
+    .header-games-title {
+        font-size: 48px;
+    }
+}
+
+/* ============================================================================
+   SEARCH GRID - Sección de Juegos y Filtros
+   ============================================================================ */
+
+.search-grid {
+    display: flex;
+    gap: 24px;
+    padding: 0;
+    margin-bottom: 32px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: visible;
+}
+
+.search-grid-games {
+    flex: 0 0 calc(75% - 12px);
+    padding: 24px;
+    background-color: var(--primary);
+    border-radius: 16px;
+    overflow: visible;
+    min-width: 0;
+}
+
+.games-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.games-grid > div {
+    flex: 0 0 calc(33.333% - 8px);
+}
+
+.search-grid-filters {
+    flex: 0 0 calc(25% - 12px);
+    background-color: var(--base-Turquoise-main);
+    border-radius: 16px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.filters-container {
+    width: 100%;
+}
+
+/* Bootstrap Grid Overrides */
+.row {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+}
+
+.container {
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#home .container {
+    max-width: 100%;
+    width: 100%;
+}
+
+@media (max-width: 1024px) {
+    .search-grid {
+        gap: 16px;
+    }
+
+    .search-grid-games {
+        flex: 1;
+    }
+
+    .games-grid > div {
+        flex: 0 0 calc(50% - 8px);
+    }
+
+    .search-grid-filters {
+        flex: 0 0 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .search-grid {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .search-grid-games,
+    .search-grid-filters {
+        flex: 0 0 100%;
+    }
+
+    .games-grid > div {
+        flex: 0 0 calc(50% - 8px);
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-base: var(--base-ink-dark);
+        --bg-surface: var(--base-ink);
+        --bg-surface-hover: var(--base-ink-light);
+        --text-main: var(--base-white);
+        --text-muted: var(--base-gray-400);
+        --text-inverse: var(--base-ink-dark);
+        --border-color: var(--base-gray-600);
+    }
+}
+
+/* ============================================================================
+   DUAL RANGE SLIDER STYLES
+   ============================================================================ */
+
+.drange {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  height: 40px;
+  margin: 5px 0 10px 0;
+
+  input[type="range"] {
+    position: absolute;
+    width: 100%;
+    pointer-events: none;
+    z-index: 5;
+    appearance: none;
+    background: none;
+
+    &::-webkit-slider-thumb {
+      pointer-events: all;
+      appearance: none;
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 0;
+      background: url('../src/svg/Btn-slider.svg') center/contain no-repeat;
+      cursor: pointer;
+      z-index: 0;
+      margin-top: -17px;
+    }
+
+    &::-moz-range-thumb {
+      pointer-events: all;
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 0;
+      background: url('../src/svg/Btn-slider.svg') center/contain no-repeat;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &::-webkit-slider-runnable-track {
+      height: 6px;
+    }
+
+    &::-moz-range-track {
+      height: 6px;
+    }
+  }
+
+  /* Rotación 180deg para el segundo tirador */
+  .drange-max {
+    &::-webkit-slider-thumb {
+      transform: rotate(180deg);
+    }
+
+    &::-moz-range-thumb {
+      transform: rotate(180deg);
+    }
+  }
+
+  .drange-track {
+    position: absolute;
+    height: 6px;
+    background: linear-gradient(to right, var(--base-white) 0%, var(--base-white) 0%, var(--base-sky-main) 0%, var(--base-sky-main) 100%, var(--base-white) 100%, var(--base-white) 100%);
+    border-radius: 3px;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .drange-values {
+    position: absolute;
+    bottom: -25px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+
+    .dmin,
+    .dmax,
+    .drange-separator {
+      display: inline;
+    }
+
+    .dmin {
+      margin-right: 4px;
+    }
+
+    .dmax {
+      margin-left: 4px;
+    }
+  }
+
+  .drange-suffix {
+    display: none;
+  }
 }
 
 /* ============================================================================
@@ -1904,263 +2256,4 @@ select.select-dark {
             font-size: 1rem;
         }
     }
-}
-
-/* ============================================================================
-   CABECERA DE VIDEOJUEGOS - Header con Gradiente de Colores
-   ============================================================================ */
-
-.header-games {
-    height: 200px;
-    background-color: var(--bg-base);
-    border-bottom: 2px solid var(--text-main);
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding: var(--spacing-lg, 20px);
-    padding-left: 40px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    margin-left: var(--sidebar-width-expanded);
-    width: calc(100% - var(--sidebar-width-expanded));
-    box-sizing: border-box;
-    transition: var(--transition);
-
-    &.sidebar-collapsed {
-        margin-left: var(--sidebar-width-collapsed);
-        width: calc(100% - var(--sidebar-width-collapsed));
-    }
-}
-
-.header-games-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 128px;
-    font-weight: 900;
-    margin: 0;
-    color: transparent;
-    background: conic-gradient(
-        from 90deg,
-        rgb(255, 0, 0) 0%,
-        rgb(0, 255, 0) 38.942%,
-        rgb(0, 60, 255) 79.327%,
-        rgb(255, 0, 0) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    white-space: nowrap;
-}
-
-@media (max-width: 1024px) {
-    .header-games {
-        height: 150px;
-        padding: 16px;
-        margin-left: var(--sidebar-width-expanded);
-        width: calc(100% - var(--sidebar-width-expanded));
-
-        &.sidebar-collapsed {
-            margin-left: var(--sidebar-width-collapsed);
-            width: calc(100% - var(--sidebar-width-collapsed));
-        }
-    }
-    
-    .header-games-title {
-        font-size: 80px;
-    }
-}
-
-@media (max-width: 768px) {
-    .header-games {
-        height: 120px;
-        padding: 12px;
-        margin-left: 0;
-        width: 100%;
-
-        &.sidebar-collapsed {
-            margin-left: 0;
-            width: 100%;
-        }
-    }
-    
-    .header-games-title {
-        font-size: 60px;
-    }
-}
-
-@media (max-width: 480px) {
-    .header-games {
-        height: 100px;
-        padding: 10px;
-        margin-left: 0;
-        width: 100%;
-
-        &.sidebar-collapsed {
-            margin-left: 0;
-            width: 100%;
-        }
-    }
-    
-    .header-games-title {
-        font-size: 48px;
-    }
-}
-
-/* ============================================================================
-   SEARCH GRID - Sección de Juegos y Filtros
-   ============================================================================ */
-
-.search-grid {
-    display: flex;
-    gap: 24px;
-    padding: 0;
-    margin-bottom: 32px;
-}
-
-.search-grid-games {
-    flex: 0 0 calc(75% - 12px);
-    padding: 24px 4px;
-    background-color: var(--primary);
-    border-radius: 16px;
-}
-
-.games-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin: 0;
-    justify-content: center;
-}
-
-.games-grid > div {
-    flex: 0 0 calc(33.333% - 8px);
-}
-
-.search-grid-filters {
-    flex: 0 0 calc(25% - 12px);
-    background-color: var(--base-Turquoise-main);
-    border-radius: 16px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    max-height: 500px;
-    overflow-y: auto;
-}
-
-.filters-container {
-    width: 100%;
-}
-
-@media (max-width: 1024px) {
-    .search-grid-games {
-        flex: 0 0 calc(66% - 12px);
-    }
-
-    .games-grid > div {
-        flex: 0 0 calc(50% - 8px);
-    }
-
-    .search-grid-filters {
-        flex: 0 0 calc(34% - 12px);
-    }
-}
-
-@media (max-width: 768px) {
-    .search-grid {
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .search-grid-games,
-    .search-grid-filters {
-        flex: 0 0 100%;
-    }
-
-    .games-grid > div {
-        flex: 0 0 calc(50% - 8px);
-    }
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --bg-base: var(--base-ink-dark);
-        --bg-surface: var(--base-ink);
-        --bg-surface-hover: var(--base-ink-light);
-        --text-main: var(--base-white);
-        --text-muted: var(--base-gray-400);
-        --text-inverse: var(--base-ink-dark);
-        --border-color: var(--base-gray-600);
-    }
-}
-
-/* ============================================================================
-   PRICE RANGE SLIDER STYLES
-   ============================================================================ */
-
-input[type="range"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 100%;
-    height: 6px;
-    border-radius: 100px;
-    outline: none;
-    cursor: pointer;
-}
-
-/* Track styling */
-input[type="range"]::-webkit-slider-runnable-track {
-    background: #333;
-    height: 4px;
-    border-radius: 100px;
-}
-
-input[type="range"]::-moz-range-track {
-    background: #333;
-    height: 4px;
-    border-radius: 100px;
-    border: none;
-}
-
-/* Thumb styling para webkit (Chrome, Safari, Edge) */
-input[type="range"]::-webkit-slider-thumb {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--base-sky-main);
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-    border: 3px solid white;
-    margin-top: -9px;
-    transition: all 0.2s ease;
-}
-
-input[type="range"]::-webkit-slider-thumb:hover {
-    transform: scale(1.15);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
-}
-
-/* Thumb styling para Firefox */
-input[type="range"]::-moz-range-thumb {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--base-sky-main);
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-    border: 3px solid white;
-    transition: all 0.2s ease;
-}
-
-input[type="range"]::-moz-range-thumb:hover {
-    transform: scale(1.15);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
-}
-
-#priceMax {
-    background: linear-gradient(to right, var(--base-sky-main) 0%, var(--base-sky-main) 50%, #333 50%, #333 100%);
-}
-
-#priceMin {
-    background: transparent;
 }

@@ -311,96 +311,90 @@ const priceSlider = (() => {
 })();
 
 // ============================================
-// DATE RANGE SLIDER (NEWS PAGE)
+// DUAL RANGE SLIDERS
 // ============================================
 
-const dateSlider = (() => {
-    const initSliders = () => {
-        const dateMin = document.getElementById('dateMin');
-        const dateMax = document.getElementById('dateMax');
-        const minDateDisplay = document.getElementById('minDate');
-        const maxDateDisplay = document.getElementById('maxDate');
+const dualRangeSliders = (() => {
+    const MIN_DISTANCE = 1;
+    
+    // Mapa de keypoints: índice -> etiqueta
+    const keyPoints = ['FREE', '0', '5', '10', '30', '60+'];
+    
+    // Mapa de keypoints: índice -> valor real
+    const keyValues = [0, 0, 5, 10, 30, 60];
+    
+    const getLabel = (index) => keyPoints[parseInt(index)];
+    const getValue = (index) => keyValues[parseInt(index)];
+    
+    const updateTrack = (drange) => {
+        const rangeMin = drange.querySelector(".drange-min");
+        const rangeMax = drange.querySelector(".drange-max");
+        const track = drange.querySelector(".drange-track");
+        
+        if (!rangeMin || !rangeMax || !track) return;
+        
+        const minIndex = parseInt(rangeMin.value);
+        const maxIndex = parseInt(rangeMax.value);
+        
+        const minPercent = (minIndex / 5) * 100;
+        const maxPercent = (maxIndex / 5) * 100;
+        
+        track.style.background = `linear-gradient(to right, var(--base-white) 0%, var(--base-white) ${minPercent}%, var(--base-sky-main) ${minPercent}%, var(--base-sky-main) ${maxPercent}%, var(--base-white) ${maxPercent}%, var(--base-white) 100%)`;
+    };
 
-        if (!dateMin || !dateMax) return;
+    const initDualRangeSliders = () => {
+        // Loop through all dual range sliders
+        document.querySelectorAll(".drange").forEach(drange => {
+            // Get range pickers & value display
+            let ranges = drange.querySelectorAll("input[type=range]"),
+                dmin = drange.querySelector(".dmin"),
+                dmax = drange.querySelector(".dmax"),
+                valueMin = drange.parentElement.querySelector(".drange-value-min"),
+                valueMax = drange.parentElement.querySelector(".drange-value-max");
 
-        const updateSliderBackground = () => {
-            const minVal = parseInt(dateMin.value);
-            const maxVal = parseInt(dateMax.value);
-            const minPercent = (minVal / 100) * 100;
-            const maxPercent = (maxVal / 100) * 100;
+            if (ranges.length < 2 || !dmin || !dmax) return;
 
-            dateMax.style.background = `linear-gradient(to right, var(--base-sky-main) 0%, var(--base-sky-main) ${minPercent}%, #333 ${minPercent}%, #333 ${maxPercent}%, var(--base-sky-main) ${maxPercent}%, var(--base-sky-main) 100%)`;
+            const updateValues = () => {
+                const minIndex = parseInt(ranges[0].value);
+                const maxIndex = parseInt(ranges[1].value);
+                
+                const minLabel = getLabel(minIndex);
+                const maxLabel = getLabel(maxIndex);
+                const minValue = getValue(minIndex);
+                const maxValue = getValue(maxIndex);
+                
+                // Mostrar formato: "minLabel € · maxLabel €"
+                dmin.innerHTML = minLabel + ' €';
+                dmax.innerHTML = maxLabel + ' €';
+                
+                if (valueMin) valueMin.value = minValue;
+                if (valueMax) valueMax.value = maxValue;
+                updateTrack(drange);
+            };
 
-            minDateDisplay.textContent = minVal;
-            maxDateDisplay.textContent = maxVal;
-        };
+            // Min cannot be more than max - mantiene distancia mínima
+            ranges[0].addEventListener("input", e => {
+                if (+ranges[0].value >= +ranges[1].value - MIN_DISTANCE) {
+                    ranges[0].value = +ranges[1].value - MIN_DISTANCE;
+                }
+                updateValues();
+            });
 
-        dateMin.addEventListener('input', () => {
-            if (parseInt(dateMin.value) > parseInt(dateMax.value)) {
-                dateMin.value = dateMax.value;
-            }
-            updateSliderBackground();
+            // Max cannot be less than min - mantiene distancia mínima
+            ranges[1].addEventListener("input", e => {
+                if (+ranges[1].value <= +ranges[0].value + MIN_DISTANCE) {
+                    ranges[1].value = +ranges[0].value + MIN_DISTANCE;
+                }
+                updateValues();
+            });
+
+            // Init value display
+            updateValues();
         });
-
-        dateMax.addEventListener('input', () => {
-            if (parseInt(dateMax.value) < parseInt(dateMin.value)) {
-                dateMax.value = dateMin.value;
-            }
-            updateSliderBackground();
-        });
-
-        updateSliderBackground();
     };
 
     return {
-        init: initSliders
-    };
-})();
-
-// ============================================
-// EXPERIENCE RANGE SLIDER (DEVS PAGE)
-// ============================================
-
-const expSlider = (() => {
-    const initSliders = () => {
-        const expMin = document.getElementById('expMin');
-        const expMax = document.getElementById('expMax');
-        const minExpDisplay = document.getElementById('minExp');
-        const maxExpDisplay = document.getElementById('maxExp');
-
-        if (!expMin || !expMax) return;
-
-        const updateSliderBackground = () => {
-            const minVal = parseInt(expMin.value);
-            const maxVal = parseInt(expMax.value);
-            const minPercent = (minVal / 100) * 100;
-            const maxPercent = (maxVal / 100) * 100;
-
-            expMax.style.background = `linear-gradient(to right, var(--base-sky-main) 0%, var(--base-sky-main) ${minPercent}%, #333 ${minPercent}%, #333 ${maxPercent}%, var(--base-sky-main) ${maxPercent}%, var(--base-sky-main) 100%)`;
-
-            minExpDisplay.textContent = minVal;
-            maxExpDisplay.textContent = maxVal;
-        };
-
-        expMin.addEventListener('input', () => {
-            if (parseInt(expMin.value) > parseInt(expMax.value)) {
-                expMin.value = expMax.value;
-            }
-            updateSliderBackground();
-        });
-
-        expMax.addEventListener('input', () => {
-            if (parseInt(expMax.value) < parseInt(expMin.value)) {
-                expMax.value = expMin.value;
-            }
-            updateSliderBackground();
-        });
-
-        updateSliderBackground();
-    };
-
-    return {
-        init: initSliders
+        init: initDualRangeSliders
     };
 })();
 
@@ -418,8 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
     newsGridSection.init();
     devsGridSection.init();
     priceSlider.init();
-    dateSlider.init();
-    expSlider.init();
+    dualRangeSliders.init();
 });
 
 

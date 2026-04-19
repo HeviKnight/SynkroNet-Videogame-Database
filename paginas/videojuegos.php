@@ -59,21 +59,8 @@ include_once('../componentes/filter-component.php');
             </div>
 
             <div class="search-grid-filters">
-                    <!-- Price Slider -->
-                            <div style="padding: 5px 10px;">
-                                <label style="font-size: 12px; color: white; font-weight: bold; display: block; margin-bottom: 8px;">Rango de precio</label>
-                                <div style="display: flex; flex-direction: column; gap: 10px;">
-                                    <div style="position: relative; height: 30px; display: flex; align-items: center;">
-                                        <input type="range" id="priceMax" min="0" max="100" value="100" style="width: 100%; position: absolute; height: 6px; accent-color: var(--base-sky-main); -webkit-appearance: none;">
-                                        <input type="range" id="priceMin" min="0" max="100" value="0" style="width: 100%; position: absolute; height: 6px; accent-color: var(--base-sky-main); -webkit-appearance: none; z-index: 10;">
-                                    </div>
-                                    <div style="display: flex; gap: 2.5px; align-items: center; justify-content: center;">
-                                        <div style="background-color: white; border-radius: 6px; padding: 5px; text-align: center; font-size: 12px; color: var(--base-gray-400); flex: 1;"><span id="minPrice">0</span>€</div>
-                                        <span style="width: 4px; height: 4px; background-color: white; border-radius: 1px;"></span>
-                                        <div style="background-color: white; border-radius: 6px; padding: 5px; text-align: center; font-size: 12px; color: var(--base-gray-400); flex: 1;"><span id="maxPrice">100</span>€</div>
-                                    </div>
-                                </div>
-                            </div>
+                            <!-- Price Slider -->
+                            <?php renderRangeSlider('Rango de precio', 'price', 0, 60, 0, 60, '€'); ?>
 
                             <div style="border-bottom: 1px solid white; margin: 5px;"></div>
 
@@ -93,13 +80,7 @@ include_once('../componentes/filter-component.php');
                                 <?php renderFilterGroup('Plataformas', ['PC', 'PlayStation', 'Xbox', 'Nintendo', 'Mobile'], 'platformsFilter', true); ?>
                             </div>
                         </div>
-                    </div>
-                </div>
             </section>
-
-    </main>
-</section>
-
 <?php
 include_once("../componentes/footer.php");
 ?>
