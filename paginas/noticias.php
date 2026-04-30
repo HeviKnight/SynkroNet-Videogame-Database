@@ -53,8 +53,8 @@ include_once('../componentes/filter-component.php');
 
         <!-- NEWS GRID AND FILTERS -->
         <section class="search-grid">
-            <div class="search-grid-games">
-                <div class="games-grid row g-3" id="news-grid">
+            <div class="search-grid-news">
+                <div class="" id="news-grid">
                 </div>
             </div>
 

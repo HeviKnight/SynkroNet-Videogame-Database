@@ -3,13 +3,9 @@
  * Funciones simples para generar cards con valores por defecto
  */
 
-/**
- * @param {string} title - Título (opcional)
- * @returns {string} HTML de la tarjeta
- */
 function createGameCard(title = 'Título Videojuego', score = 5) {
     return `
-        <div class="col-lg-3 col-sm-6">
+        <a href='paginas/game-file.php' class="col-lg-3 col-sm-6">
             <div class="card-game">
                 <div>
                     <span><i class="bi bi-box-arrow-up-right"></i></span>
@@ -28,15 +24,10 @@ function createGameCard(title = 'Título Videojuego', score = 5) {
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
     `;
 }
 
-/**
- * @param {string} name - Nombre (opcional)
- * @param {string} role - Rol (opcional)
- * @returns {string} HTML de la tarjeta
- */
 function createDeveloperCard(name = 'Developer Name', role = 'Lead Developer') {
     return `
         <div class="col-lg-2 col-sm-4">
@@ -59,14 +50,9 @@ function createDeveloperCard(name = 'Developer Name', role = 'Lead Developer') {
     `;
 }
 
-/**
- * @param {string} title - Título (opcional)
- * @param {string} date - Fecha (opcional)
- * @returns {string} HTML de la tarjeta
- */
 function createReleaseCard(title = 'Game Title', date = '31/10/2024') {
     return `
-        <div class="col-lg-4 col-md-6">
+        <a href='paginas/game-file.php' class="col-lg-4 col-md-6">
             <div class="card-upcoming">
                 <img src="https://picsum.photos/400/160" alt="${title}">
                 <div>
@@ -88,15 +74,10 @@ function createReleaseCard(title = 'Game Title', date = '31/10/2024') {
                     <p>${title}</p>
                 </div>
             </div>
-        </div>
+        </a>
     `;
 }
 
-/**
- * @param {string} title - Título (opcional)
- * @param {string} author - Autor (opcional)
- * @returns {string} HTML de la tarjeta
- */
 function createNewsCard(title = 'Título de la noticia', author = 'Redacción') {
     return `
         <div class="col-lg-4 col-md-6 col-12">
@@ -116,10 +97,24 @@ function createNewsCard(title = 'Título de la noticia', author = 'Redacción') 
     `;
 }
 
-/**
- * @param {string} title - Título (opcional)
- * @returns {string} HTML de la tarjeta
- */
+function createNewsCardList(title = 'Título de la noticia', author = 'Redacción') {
+    return `
+        <div class="col-12">
+            <div class="news-list">
+                <img src="https://picsum.photos/100/100" alt="${title}" class="">
+                <img src="https://picsum.photos/100/100" alt="${title}">
+                <div>
+                    <h4>${title}</h4>
+                    <div>
+                        <p>descripcion</p>
+                        <p>Tiempo de lectura: 5 min · ${author}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
 function createCommunityCard(title = 'Hilos populares') {
     return `
         <div class="col-lg-4 col-md-6 col-12">

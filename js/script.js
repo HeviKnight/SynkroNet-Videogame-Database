@@ -212,7 +212,7 @@ const newsGridSection = (() => {
             return;
         }
         for (let i = 0; i < 6; i++) {
-            cache.container.insertAdjacentHTML('beforeend', createNewsCard('Noticia ' + (i + 1)));
+            cache.container.insertAdjacentHTML('beforeend', createNewsCardList('Noticia ' + (i + 1)));
         }
     };
 

@@ -104,6 +104,7 @@
     --border-radius-alt-3: 0 0 0 12px;
     --border-radius-alt-4: 16px 0 0 0;
     --border-radius-alt-5: 0 0 16px 0;
+    --border-radius-alt-6: 0 16px 16px 16px;
 }
 
 [data-bs-theme="dark"] {
@@ -126,12 +127,36 @@
     box-sizing: border-box;
 }
 
-body, html {
-    background-color: var(--bg-base);
+body, html, h1, h2, h3, h4, h5, h6 {
     color: var(--text-main);
     font-family: "Jura", sans-serif;
     font-size: 16px;
     line-height: var(--line-height-relaxed);
+    margin: 0;
+    padding: 0;
+}
+
+h3 {
+    font-size: 2rem;
+}
+
+a{
+    text-decoration: none;
+}
+
+button {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+p{
+    margin-bottom: 0;
 }
 
 /* ============================================================================
@@ -1010,6 +1035,167 @@ body, html {
     }
 }
 
+.section-hero-gamefile {
+    margin-bottom: 20px;
+
+    &>div:first-child{
+        display: flex;
+        justify-content: space-between;
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://picsum.photos/1000/') center/cover;
+        margin-bottom: 80px;
+        padding: 0 60px;
+        border-radius: var(--border-radius);
+
+        &>img:first-child, .info{
+            position: relative;
+            top: 60px;
+        }
+
+        .info{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+    }
+    &>div:last-child{
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border-color);
+        padding: 0;
+
+        h2, p{
+            font-size: 2rem;
+            margin: 0;
+        }
+    }
+
+    @media (max-width: 1024px) {
+        &>div:first-child{
+            padding: 0 40px;
+            margin-bottom: 60px;
+
+            &>img:first-child, .info{
+                top: 40px;
+            }
+        }
+
+        &>div:last-child{
+            h2, p{
+                font-size: 1.5rem;
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        margin-bottom: 16px;
+
+        &>div:first-child{
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            padding: 12px 24px 0 24px;
+            margin-bottom: 40px;
+
+            &>img:first-child{
+                width: 100%;
+                max-width: 250px;
+                height: 300px;
+                object-fit: cover;
+                border-radius: var(--border-radius);
+                top: 0;
+            }
+
+            .info{
+                width: 100%;
+                gap: 32px;
+            }
+        }
+
+        &>div:last-child{
+            flex-direction: column;
+            gap: 12px;
+
+            h2, p{
+                font-size: 1.2rem;
+                text-align: center;
+            }
+        }
+    }
+
+    @media (max-width: 480px) {
+        margin-bottom: 12px;
+
+        &>div:first-child{
+            padding: 0 16px;
+            margin-bottom: 30px;
+            gap: 16px;
+
+            &>img:first-child{
+                max-width: 200px;
+                height: 250px;
+            }
+
+            .info{
+                gap: 12px;
+            }
+        }
+
+        &>div:last-child{
+            h2, p{
+                font-size: 1rem;
+            }
+        }
+    }
+}
+
+.section-info {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    
+
+    .buttons-set{
+        display: flex;
+        gap: 12px;
+    }
+
+    .data{
+        display: flex;
+        background-color: var(--primary);
+        padding: 15px;
+        border-radius: var(--border-radius-alt-6);
+        gap: 12px;
+
+        >div:first-child {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: var(--bg-pill-dark);
+            color: var(--text-inverse);
+            padding: 16px;
+            border-radius: var(--border-radius);
+
+            .rating{
+                border: 2px solid var(--border-color);
+                padding: 5px 40px;
+                border-radius: var(--border-radius);
+                display: flex;
+                flex-direction: column;
+                width: 250px;
+                span:last-child{
+                    display: flex;
+                    justify-content: space-around;
+                }
+            }
+        }
+
+        >div:last-child{
+            width: 75%;
+        }
+    }
+
+}
 
 /* ============================================================================
    COMPONENTES GLOBALES - Cards
@@ -1334,6 +1520,40 @@ body, html {
         }
     }
 
+    .news-list {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        background-color: var(--primary);
+        border-radius: var(--border-radius-pill);
+        padding: 5px 50px 5px 20px;
+        gap: 10px;
+
+        div{
+            width: 100%;
+        }
+
+        img:first-child{
+            width: 75px;
+            height: 75px;
+            border-radius: var(--border-radius-full);
+        }
+
+        img:nth-child(2){
+            width: 125px;
+            height: 75px;
+            border-radius: var(--border-radius-sm);
+        }
+
+        p:last-child{
+            background-color: var(--secondary);
+            padding: 5px;
+            margin-bottom: 0;
+            border-radius: var(--border-radius-sm);
+        }
+
+    }
+
     .community-card {
         display: flex;
         flex-direction: column;
@@ -1518,12 +1738,48 @@ body, html {
     background-color: var(--bg-pill-dark);
     color: var(--text-inverse);
 
+    h1, h2, h3, h4, h5, h6 {
+        color: inherit;
+    }
+
     &:hover {
         background-color: var(--base-ink-light);
         color: var(--base-white);
     }
     &:active{
         background-color: var(--base-ink-dark);
+    }
+}
+
+.btn-half-corner {
+    background-color: var(--primary-hover);
+    color: var(--text-inverse);
+    padding: 5px 10px;
+    border-radius: var(--border-radius-pill);
+    transition: all var(--transition);
+
+    &:hover {
+        background-color: var(--primary-active);
+        color: var(--base-white);
+    }
+    &:active{
+        background-color: var(--primary);
+        border-radius: var(--border-radius-alt-1);
+    }
+}
+
+.btn-selector {
+    background-color: var(--secondary);
+    color: var(--text-main);
+    padding: 5px 10px;
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition);
+
+    &:hover {
+        background-color: var(--secondary-hover);
+    }
+    &:active{
+        background-color: var(--secondary-active)!important;
     }
 }
 
@@ -1558,6 +1814,28 @@ body, html {
     border-radius: var(--border-radius-pill);
     padding: 2px 8px;
 }
+
+.tag-inverse{
+    font-size: 1rem;
+    color: var(--base-white);
+    background-color: var(--primary);
+    border-radius: var(--border-radius-pill);
+
+    &:hover{
+        color: var(--base-white);
+        background-color: var(--primary);
+        border-radius: var(--border-radius-pill);
+        scale: 1;
+    }
+
+    &:active{
+        color: var(--base-white)!important;
+        background-color: var(--primary)!important;
+        border-radius: var(--border-radius-pill);
+        scale: 1;
+    }
+}
+
 
 /* ============================================================================
    COMPONENTES GLOBALES - Inputs y Formularios
@@ -1650,6 +1928,22 @@ select.select-dark {
         background-color: var(--bg-pill-dark);
         color: var(--text-inverse);
     }
+}
+
+/* Select para btn-selector */
+select.btn-selector {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: var(--secondary) !important;
+    color: var(--text-main) !important;
+}
+
+select.btn-selector:hover,
+select.btn-selector:focus,
+select.btn-selector:active {
+    background-color: var(--secondary) !important;
+    color: var(--text-main) !important;
 }
 
 /* ============================================================================
@@ -1769,6 +2063,13 @@ select.select-dark {
     padding: 24px;
     background-color: var(--primary);
     border-radius: 16px;
+    overflow: visible;
+    min-width: 0;
+}
+
+.search-grid-news {
+    flex: 0 0 calc(75% - 12px);
+    padding: 24px;
     overflow: visible;
     min-width: 0;
 }
