@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SynkroNET - Plataforma de Videojuegos</title>
+    <link rel="icon" type="image/ico" href="<?php echo $base_url; ?>/public\favicon.ico">
     <meta name="description" content="SynkroNET - Tu plataforma de videojuegos favorita" />
     
     <link rel="preconnect" href="https://fonts.googleapis.com">

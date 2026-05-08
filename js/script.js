@@ -1,4 +1,4 @@
-// Global Functions
+// Global Functions ===== ACTUALIZAR CON EL JSON
 function selectButtons(buttons, container, createListFn) {
     buttons.forEach(element => {
         element.addEventListener('click', () => {
@@ -17,7 +17,17 @@ function selectButtons(buttons, container, createListFn) {
 const gamesSection = (() => {
     const cache = {
         container: null,
-        buttons: null
+        buttons: null,
+        games: []
+    };
+
+    const fetchGames = async () => {
+        try {
+            const response = await fetch('<?php echo $base_url; ?>/api/getGames.php');
+            cache.games = await response.json();
+        } catch (error) {
+            console.error('Error fetching games:', error);
+        }
     };
 
     const initCache = () => {
@@ -26,17 +36,20 @@ const gamesSection = (() => {
     };
 
     const createList = (titleName) => {
-        for (let i = 0; i < 4; i++) {
-            cache.container.insertAdjacentHTML('beforeend', createGameCard(titleName));
-        }
+        cache.container.innerHTML = '';
+        cache.games.forEach(game => {
+            cache.container.insertAdjacentHTML('beforeend', 
+                createGameCard(game.titulo, game.rating, game.imagen_url)
+            );
+        });
     };
 
     return {
-        init: () => {
+        init: async () => {
+            await fetchGames(); // Espera a obtener los datos
             initCache();
-            if (!cache.container) return; // Salir si no existe el elemento
+            if (!cache.container) return; // Salir si no existe
             selectButtons(cache.buttons, cache.container, createList);
-            cache.container.innerHTML = '';
             createList('Popular');
         }
     };

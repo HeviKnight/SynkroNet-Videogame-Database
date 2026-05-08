@@ -3,23 +3,19 @@
  * Funciones simples para generar cards con valores por defecto
  */
 
-function createGameCard(title = 'Título Videojuego', score = 5) {
+function createGameCard(title = 'Título', score = 5, imageUrl = 'https://picsum.photos/300/150') {
     return `
         <a href='paginas/game-file.php' class="col-lg-3 col-sm-6">
             <div class="card-game">
                 <div>
                     <span><i class="bi bi-box-arrow-up-right"></i></span>
                 </div>
-                <img src="https://picsum.photos/300/150" class="img-fluid" alt="${title}">
+                <img src="${imageUrl}" class="img-fluid" alt="${title}">
                 <div>
                     <div class="tags">
                         <div class="card-tag"><i class="bi bi-star-fill"></i>${score}</div>
-                        <div class="card-tag">Indie</div>
-                        <div class="card-tag">Cooperativo</div>
-                        <div class="card-tag">Aventura</div>
                     </div>
                     <div>
-                        <img src="https://picsum.photos/50/50" alt="Studio">
                         <h5>${title}</h5>
                     </div>
                 </div>

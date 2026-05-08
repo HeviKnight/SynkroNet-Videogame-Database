@@ -27,6 +27,7 @@ dist-ssr
 .env
 .env.*
 !.env.example
+config.php
 
 # OS/runtime artifacts
 Thumbs.db
