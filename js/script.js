@@ -23,7 +23,7 @@ const gamesSection = (() => {
 
     const fetchGames = async () => {
         try {
-            const response = await fetch('./api/getDBData.php');
+            const response = await fetch('./api/getDbData.php');
             cache.games = await response.json();
         } catch (error) {
             console.error('Error fetching games:', error);
@@ -39,7 +39,7 @@ const gamesSection = (() => {
         cache.container.innerHTML = '';
         cache.games.forEach(game => {
             cache.container.insertAdjacentHTML('beforeend', 
-                createGameCard(game.titulo, game.rating, game.imagen_url)
+                createGameCard(game.titulo, game.rating_avg, game.imagen_url)
             );
         });
     };

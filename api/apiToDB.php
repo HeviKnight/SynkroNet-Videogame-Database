@@ -25,23 +25,27 @@ try {
     }
 
     // 4. Preparar la sentencia SQL (Evita inyección SQL)
-    $sql = "INSERT INTO juegos (rawg_id, titulo, imagen_url, rating) 
-            VALUES (:id, :titulo, :img, :rating)
+    $sql = "INSERT INTO videojuegos (rawg_id, titulo, descripcion, imagen_url, rating_avg, fecha_lanzamiento) 
+            VALUES (:rawg_id, :titulo, :descripcion, :imagen_url, :rating_avg, :fecha_lanzamiento)
             ON DUPLICATE KEY UPDATE 
             titulo = VALUES(titulo), 
+            descripcion = VALUES(descripcion),
             imagen_url = VALUES(imagen_url),
-            rating = VALUES(rating)";
+            rating_avg = VALUES(rating_avg),
+            fecha_lanzamiento = VALUES(fecha_lanzamiento)";
 
-    $stmt = $pdo->prepare($sql);
+    $stmt = $gbd->prepare($sql);
 
     // 5. Recorrer y guardar
     $count = 0;
     foreach ($data['results'] as $game) {
         $stmt->execute([
-            ':id'     => $game['id'],
+            ':rawg_id' => $game['id'],
             ':titulo' => $game['name'],
-            ':img'    => $game['background_image'],
-            ':rating' => $game['rating']
+            ':descripcion' => $game['description'] ?? null,
+            ':imagen_url' => $game['background_image'] ?? null,
+            ':rating_avg' => $game['rating'] ?? 0,
+            ':fecha_lanzamiento' => $game['released'] ?? null
         ]);
         $count++;
     }
