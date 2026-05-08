@@ -10,7 +10,7 @@ function createGameCard(title = 'Título', score = 5, imageUrl = 'https://picsum
                 <div>
                     <span><i class="bi bi-box-arrow-up-right"></i></span>
                 </div>
-                <img src="${imageUrl}" class="img-fluid" alt="${title}">
+                <img src="${imageUrl}" alt="${title}">
                 <div>
                     <div class="tags">
                         <div class="card-tag"><i class="bi bi-star-fill"></i>${score}</div>

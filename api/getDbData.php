@@ -1,7 +1,7 @@
 <?php
 require_once 'conection.php';
 
-$stmt = $gbd->prepare("SELECT * FROM videojuegos ORDER BY rating_avg DESC LIMIT 20");
+$stmt = $gbd->prepare("SELECT * FROM videojuegos");
 $stmt->execute();
 $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
