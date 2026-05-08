@@ -23,7 +23,7 @@ const gamesSection = (() => {
 
     const fetchGames = async () => {
         try {
-            const response = await fetch('<?php echo $base_url; ?>/api/getGames.php');
+            const response = await fetch('./api/getDBData.php');
             cache.games = await response.json();
         } catch (error) {
             console.error('Error fetching games:', error);
