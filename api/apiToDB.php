@@ -4,7 +4,7 @@ require_once 'conection.php';
 
 try {
     // 2. Definir URL de RAWG (ejemplo: 10 juegos más populares)
-    $url = "https://api.rawg.io/api/games?key=" . RAWG_API_KEY . "&page_size=10";
+    $url = "https://api.rawg.io/api/games?key=" . RAWG_API_KEY . "&page_size=100";
 
     // 3. Petición cURL a la API
     $ch = curl_init($url);
