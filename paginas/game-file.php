@@ -82,6 +82,56 @@ include_once('../componentes/sidebar.php');
             </div>
         </section>
 
+        <!-- Links section -->
+          <!-- RATINGS, LINKS & LANGUAGES SECTION -->
+        <section id="links-section">
+            <!-- Edad Recomendada -->
+            <div class="section-link-card">
+                <h5>Edad recomendada</h5>
+                <div class="row">
+                    <div class="col-4">
+                        <img src='https://picsum.photos/200/200?random=1' alt="">
+                        <span>EU</span>
+                    </div>
+                    <div class="col-4">
+                        <img src='https://picsum.photos/200/200?random=2' alt="">
+                        <span>JP</span>
+                    </div>
+                    <div class="col-4">
+                        <img src='https://picsum.photos/200/200?random=3' alt="">
+                        <span>US</span>
+                    </div>
+                    <div class="col-4">
+                        <img src='https://picsum.photos/200/200?random=4' alt="">
+                        <span>AU</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Links a Terceros -->
+            <div class="section-link-card">
+                <h5>Links</h5>
+                <div class="row">
+                    <a href="#" class="col-4"><i class="bi bi-link-45deg"></i></a>
+                    <a href="#" class="col-4"><i class="bi bi-discord"></i></a>
+                    <a href="#"class="col-4"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="col-4"><i class="bi bi-youtube"></i></a>
+                    <a href="#" class="col-4"><i class="bi bi-twitch"></i></a>
+                </div>
+            </div>
+
+            <!-- Idiomas Disponibles -->
+            <div class="section-link-card">
+                <h5>Idiomas</h5>
+                <ul>
+                    <li>Español</li>
+                    <li>English</li>
+                    <li>Français</li>
+                    <li>中文</li>
+                </ul>
+            </div>
+        </section>
+
         <!-- DEV BLOGS SECTION -->
         <section class="section-B">
             <div class="section-buttons">
@@ -206,7 +256,7 @@ include_once('../componentes/sidebar.php');
             </div>
         </section>
 
-        <!-- REVIEWS SECTION -->
+       
         <section class="section-B">
             <div class="section-buttons">
                 <h2 class="section-title">Reseñas populares</h2>
@@ -296,9 +346,9 @@ include_once('../componentes/sidebar.php');
             </div>
         </section>
 
-    </section>
-</main>
-
 <?php
 include_once("../componentes/footer.php");
 ?>
+    </section>
+</main>
+
