@@ -1,3 +1,145 @@
+// ============================================
+// RAWG API - Direct calls from JavaScript
+// ============================================
+
+const externalGames = (() => {
+    const CACHE_KEY = 'rawg_games_cache';
+    const CACHE_EXPIRY = 7 * 24 * 60 * 60 * 1000; // 7 días
+    const RAWG_BASE_URL = 'https://api.rawg.io/api/games';
+    let RAWG_API_KEY = null;
+
+    /**
+     * Obtiene la API KEY desde el servidor
+     */
+    const loadApiKey = async () => {
+        if (RAWG_API_KEY) return RAWG_API_KEY;
+        
+        try {
+            const response = await fetch('./api/getApiKey.php');
+            const data = await response.json();
+            
+            if (data.success) {
+                RAWG_API_KEY = data.apiKey;
+                return RAWG_API_KEY;
+            } else {
+                console.error('Error loading API key:', data.error);
+                return null;
+            }
+        } catch (error) {
+            console.error('Error fetching API key:', error);
+            return null;
+        }
+    };
+
+    /**
+     * Obtiene datos en caché o null si expiró
+     */
+    const getCachedData = (cacheKey) => {
+        try {
+            const cached = localStorage.getItem(cacheKey);
+            if (!cached) return null;
+            
+            const { data, timestamp } = JSON.parse(cached);
+            if (Date.now() - timestamp > CACHE_EXPIRY) {
+                localStorage.removeItem(cacheKey);
+                return null;
+            }
+            
+            return data;
+        } catch (error) {
+            console.error('Error reading cache:', error);
+            return null;
+        }
+    };
+
+    /**
+     * Guarda datos en caché con timestamp
+     */
+    const setCachedData = (data, cacheKey) => {
+        try {
+            localStorage.setItem(cacheKey, JSON.stringify({
+                data,
+                timestamp: Date.now()
+            }));
+        } catch (error) {
+            console.error('Error setting cache:', error);
+        }
+    };
+
+    /**
+     * Llamada estructurada a RAWG API
+     */
+    const fetchFromRAWG = async (params = {}) => {
+        try {
+            const apiKey = await loadApiKey();
+            if (!apiKey) {
+                throw new Error('API key no disponible');
+            }
+
+            const query = new URLSearchParams({
+                key: apiKey,
+                ...params
+            }).toString();
+            
+            const url = `${RAWG_BASE_URL}?${query}`;
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            return data.results || [];
+        } catch (error) {
+            console.error('Error fetching from RAWG:', error);
+            return [];
+        }
+    };
+
+    /**
+     * Obtiene los 10 juegos más populares con caché
+     */
+    const getTopPopular = async () => {
+        const cacheKey = `${CACHE_KEY}_top_popular`;
+        const cached = getCachedData(cacheKey);
+        
+        if (cached) {
+            console.log('Top Popular Games: usando caché');
+            return cached;
+        }
+        
+        console.log('Top Popular Games: fetch desde RAWG API');
+        const games = await fetchFromRAWG({
+            ordering: '-rating',
+            page_size: 10
+        });
+        
+        if (games.length > 0) {
+            setCachedData(games, cacheKey);
+        }
+        
+        return games;
+    };
+
+    /**
+     * Limpia el caché
+     */
+    const clearCache = () => {
+        const keys = Object.keys(localStorage);
+        keys.forEach(key => {
+            if (key.startsWith('rawg_games_cache')) {
+                localStorage.removeItem(key);
+            }
+        });
+        console.log('Caché RAWG limpiado');
+    };
+
+    return {
+        getTopPopular,
+        clearCache
+    };
+})();
+
 // Global Functions ===== ACTUALIZAR CON EL JSON
 function selectButtons(buttons, container, createListFn) {
     buttons.forEach(element => {
@@ -11,46 +153,49 @@ function selectButtons(buttons, container, createListFn) {
 }
 
 // ============================================
-// GAMES SECTION
+// GAMES SECTION (RAWG API - Top 10 Popular)
 // ============================================
 
 const gamesSection = (() => {
     const cache = {
         container: null,
-        buttons: null,
         games: []
-    };
-
-    const fetchGames = async () => {
-        try {
-            const response = await fetch('./api/getDbData.php');
-            cache.games = await response.json();
-        } catch (error) {
-            console.error('Error fetching games:', error);
-        }
     };
 
     const initCache = () => {
         cache.container = document.querySelector('.games-module .card-content .row');
-        cache.buttons = document.querySelectorAll('.games-module .section-buttons div:first-child button');
     };
 
-    const createList = (titleName) => {
+    const renderGames = () => {
         cache.container.innerHTML = '';
+        
+        if (cache.games.length === 0) {
+            cache.container.innerHTML = '<p>No se encontraron juegos</p>';
+            return;
+        }
+        
         cache.games.forEach(game => {
+            const rating = game.rating ? parseFloat(game.rating).toFixed(1) : 'N/A';
             cache.container.insertAdjacentHTML('beforeend', 
-                createGameCard(game.titulo, game.rating_avg, game.imagen_url)
+                createGameCard(game.name, rating, game.background_image)
             );
         });
     };
 
     return {
         init: async () => {
-            await fetchGames(); // Espera a obtener los datos
             initCache();
-            if (!cache.container) return; // Salir si no existe
-            selectButtons(cache.buttons, cache.container, createList);
-            createList('Popular');
+            if (!cache.container) return;
+            
+            cache.container.innerHTML = '<p class="loading">Cargando juegos...</p>';
+            
+            try {
+                cache.games = await externalGames.getTopPopular();
+                renderGames();
+            } catch (error) {
+                console.error('Error loading games:', error);
+                cache.container.innerHTML = '<p>Error al cargar los juegos</p>';
+            }
         }
     };
 })();

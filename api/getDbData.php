@@ -1,15 +1,17 @@
 <?php
-require_once 'conection.php';
+/**
+ * DEPRECATED
+ * 
+ * Este archivo ya no es necesario.
+ * Los datos ahora vienen directamente desde JavaScript 
+ * llamando a la API de RAWG con caché en localStorage.
+ * 
+ * Consulta: js/script.js → externalGames module
+ */
 
-try {
-    $stmt = $gbd->prepare("SELECT * FROM videojuegos");
-    $stmt->execute();
-    $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    header('Content-Type: application/json');
-    echo json_encode($games);
-} catch (PDOException $e) {
-    header('Content-Type: application/json');
-    echo json_encode(['error' => $e->getMessage()]);
-}
+header('Content-Type: application/json');
+echo json_encode([
+    'message' => 'Este endpoint está deprecado',
+    'use_instead' => 'Los datos vienen desde RAWG API directamente en JavaScript'
+]);
 ?>
