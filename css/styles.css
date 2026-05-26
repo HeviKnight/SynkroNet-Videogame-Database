@@ -1264,6 +1264,7 @@ p{
         transition: all var(--transition);
         position: relative;
         outline: 0px solid transparent;
+        z-index: 1;
         >div:first-child{
             position: absolute;
             display: flex;
@@ -1331,6 +1332,7 @@ p{
         }
 
                 &:hover {
+            z-index: 10;
             transform: translateY(-2px);
             box-shadow: var(--shadow-sharp);
             outline: 4px solid var(--base-purple);
@@ -1347,6 +1349,7 @@ p{
         transition: all var(--transition);
         position: relative;
         outline: 0px solid transparent;
+        z-index: 1;
         >div:first-child{
             position: absolute;
             display: flex;
@@ -1412,6 +1415,7 @@ p{
         }
 
                 &:hover {
+            z-index: 10;
             transform: translateY(-2px);
             box-shadow: var(--shadow-sharp);
             outline: 4px solid var(--base-purple);
@@ -2157,6 +2161,7 @@ select.btn-selector:active {
     margin-left: 0;
     margin-right: 0;
     margin-top: 0;
+    overflow: visible;
 }
 
 .container {
@@ -2611,7 +2616,8 @@ select.btn-selector:active {
    ============================================================================ */
 
 .carousel-track {
-    overflow: hidden !important;
+    overflow: visible !important;
+    /* Solo el track puede aplicar clip, no su contenedor padre */
 }
 
 .carousel-prev,
@@ -2630,7 +2636,7 @@ select.btn-selector:active {
 .carousel-prev:hover:not(:disabled),
 .carousel-next:hover:not(:disabled) {
     background: rgba(0, 0, 0, 0.8) !important;
-    transform: scale(1.1) !important;
+    transform: translateY(-50%) scale(1.1) !important;
 }
 
 .carousel-prev:disabled,

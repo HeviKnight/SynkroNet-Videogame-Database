@@ -302,7 +302,12 @@ const devsSection = (() => {
             const name = dev.name || 'Unknown';
             const role = dev.slug || 'Developer';
             const imageUrl = dev.image_background || 'https://picsum.photos/150/200';
-            const html = createDeveloperCard(name, role, imageUrl);
+            
+            // Featured game: usar el primer juego de la lista si existe
+            const featuredGameTitle = (dev.games && dev.games[0]) ? dev.games[0].name : '';
+            const featuredGameImage = (dev.games && dev.games[0]) ? dev.games[0].background_image : '';
+            
+            const html = createDeveloperCard(name, role, imageUrl, featuredGameTitle, featuredGameImage);
             const fragment = document.createRange().createContextualFragment(html);
             cache.container.appendChild(fragment);
         }
@@ -342,7 +347,19 @@ const devsSection = (() => {
 
             try {
                 const devs = await externalGames.fetchUrl('developers', { page_size: 10 }, { onlyResults: true });
-                cache.devs = Array.isArray(devs) ? devs : [];
+                
+                // Obtener juegos para cada desarrollador (máximo 3 por dev)
+                const devsWithGames = await Promise.all(devs.map(async (dev) => {
+                    try {
+                        const games = await externalGames.fetchUrl(`developers/${dev.id}/games`, { page_size: 1 }, { onlyResults: true });
+                        return { ...dev, games: Array.isArray(games) ? games : [] };
+                    } catch (e) {
+                        console.warn(`Error fetching games for dev ${dev.id}:`, e);
+                        return { ...dev, games: [] };
+                    }
+                }));
+                
+                cache.devs = Array.isArray(devsWithGames) ? devsWithGames : [];
 
                 try {
                     localStorage.setItem(CACHE_KEY_LOCAL, JSON.stringify({ data: cache.devs, timestamp: Date.now() }));
@@ -676,53 +693,55 @@ function setupCarousel(row) {
     if (!row) return;
     if (row.dataset.carouselInitialized === '1') return;
 
-    // Aplicar estilos básicos - permitir sombras del hover
-    row.style.position = 'relative';
-    row.style.overflow = 'visible';
-    row.style.paddingLeft = '40px';
-    row.style.paddingRight = '40px';
+    // Crear un contenedor wrapper para controlar mejor el layout
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'relative';
+    wrapper.style.overflow = 'visible';
+    wrapper.style.width = '100%';
 
+    // Aplicar estilos al track (dentro del wrapper)
     const track = document.createElement('div');
     track.className = 'carousel-track';
     track.style.display = 'flex';
     track.style.gap = '1rem';
     track.style.transition = 'transform 0.35s ease';
-    track.style.overflow = 'hidden';
+    track.style.overflow = 'visible';
+    track.style.width = '100%';
 
-    // Mover children al track
-    while (row.firstChild) {
-        track.appendChild(row.firstChild);
+    // Mover children de row al track
+    const children = Array.from(row.children);
+    for (const child of children) {
+        track.appendChild(child);
     }
-    row.appendChild(track);
 
-    // Crear controles
+    wrapper.appendChild(track);
+    row.appendChild(wrapper);
+
+    // Crear controles fuera del flujo
     const btnPrev = document.createElement('button');
     btnPrev.className = 'carousel-prev';
     btnPrev.type = 'button';
     btnPrev.innerHTML = '&larr;';
+    
     const btnNext = document.createElement('button');
     btnNext.className = 'carousel-next';
     btnNext.type = 'button';
     btnNext.innerHTML = '&rarr;';
 
-    // Estilos simples a botones (se puede mover a CSS)
+    // Estilos de posicionamiento absoluto
     [btnPrev, btnNext].forEach(b => {
         b.style.position = 'absolute';
         b.style.top = '50%';
         b.style.transform = 'translateY(-50%)';
-        b.style.zIndex = '20';
-        b.style.background = 'rgba(0,0,0,0.4)';
-        b.style.color = '#fff';
-        b.style.border = 'none';
-        b.style.padding = '6px 10px';
-        b.style.cursor = 'pointer';
-        b.style.borderRadius = '4px';
+        b.style.zIndex = '25';
     });
-    btnPrev.style.left = '8px';
-    btnNext.style.right = '8px';
+    btnPrev.style.left = '0px';
+    btnNext.style.right = '0px';
 
-    row.appendChild(btnPrev);
-    row.appendChild(btnNext);
+    wrapper.style.paddingLeft = '40px';
+    wrapper.style.paddingRight = '40px';
+    wrapper.appendChild(btnPrev);
+    wrapper.appendChild(btnNext);
 
     let itemsPerView = 4;
     const getItemsPerView = () => {
@@ -740,10 +759,12 @@ function setupCarousel(row) {
         const maxIndex = Math.max(0, Math.ceil(totalItems / itemsPerView) - 1);
         if (currentIndex > maxIndex) currentIndex = maxIndex;
         track.style.width = `${(totalItems * itemWidthPercent)}%`;
+        
         // set each child flex-basis
         for (const child of track.children) {
             child.style.flex = `0 0 ${itemWidthPercent}%`;
         }
+        
         track.style.transform = `translateX(-${currentIndex * 100}%)`;
         btnPrev.disabled = currentIndex === 0;
         btnNext.disabled = currentIndex >= maxIndex;
