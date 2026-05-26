@@ -109,7 +109,7 @@ const heroSection = (() => {
 
         // Description
         const desc = heroSection.querySelector('.hero-content > div:first-child p');
-        if (desc) desc.textContent = game.description_raw || 'Sin descripción disponible';
+        if (desc) desc.textContent = game.description || 'Sin descripción disponible';
 
         // Tags (genres)
         const tagsContainer = heroSection.querySelector('.hero-tags');
