@@ -24,17 +24,18 @@ function createGameCard(title = 'Título', score = 5, imageUrl = 'https://picsum
     `;
 }
 
-function createDeveloperCard(name = 'Developer Name', role = 'Lead Developer') {
+function createDeveloperCard(name = 'Developer Name', role = 'Lead Developer', imageUrl = 'https://picsum.photos/150/200', featuredGameTitle = 'Featured Game', featuredGameImage = '') {
     return `
         <div class="col-lg-2 col-sm-4">
             <div class="card-dev">
                 <div>
                     <span><i class="bi bi-box-arrow-up-right"></i></span>
                 </div>
-                <img src="https://picsum.photos/150/200" class="img-fluid" alt="${name}">
+                <img src="${imageUrl}" class="img-fluid" alt="${name}">
                 <div>
-                    <div>
-                        <span>Featured Game</span>
+                    <div class="featured-game">
+                        ${featuredGameImage ? `<img src="${featuredGameImage}" alt="${featuredGameTitle}" class="featured-game-img">` : ''}
+                        <span class="featured-game-title">${featuredGameTitle}</span>
                     </div>
                     <div>
                         <h5>${name}</h5>
@@ -46,11 +47,11 @@ function createDeveloperCard(name = 'Developer Name', role = 'Lead Developer') {
     `;
 }
 
-function createReleaseCard(title = 'Game Title', date = '31/10/2024', days = 0, hours = 0, minutes = 0) {
+function createReleaseCard(title = 'Game Title', date = '31/10/2024', days = 0, hours = 0, minutes = 0, imageUrl = 'https://picsum.photos/400/160') {
     return `
         <a href='paginas/game-file.php' class="col-lg-4 col-md-6">
             <div class="card-upcoming">
-                <img src="https://picsum.photos/400/160" alt="${title}">
+                <img src="${imageUrl}" alt="${title}">
                 <div>
                     <span>${date}</span>
                     <div>

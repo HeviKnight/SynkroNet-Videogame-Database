@@ -124,6 +124,12 @@ const gamesSection = (() => {
                 while (wrapper.firstChild) cache.container.appendChild(wrapper.firstChild);
             }
         }
+
+        // Inicializar carrusel
+        const row = cache.container.closest('.row');
+        if (row) {
+            setupCarousel(row);
+        }
     };
 
     return {
@@ -297,6 +303,12 @@ const devsSection = (() => {
             const html = createDeveloperCard(name, role);
             const fragment = document.createRange().createContextualFragment(html);
             cache.container.appendChild(fragment);
+        }
+
+        // Inicializar carrusel
+        const row = cache.container.closest('.row');
+        if (row) {
+            setupCarousel(row);
         }
     };
 
@@ -656,6 +668,104 @@ document.addEventListener('DOMContentLoaded', () => {
     priceSlider.init();
     dualRangeSliders.init();
 });
+
+// Helper: convierte una fila en un carrusel responsive (4/2/1)
+function setupCarousel(row) {
+    if (!row) return;
+    if (row.dataset.carouselInitialized === '1') return;
+
+    // Aplicar estilos básicos
+    row.style.overflow = 'hidden';
+    row.style.position = 'relative';
+
+    const track = document.createElement('div');
+    track.className = 'carousel-track';
+    track.style.display = 'flex';
+    track.style.gap = '1rem';
+    track.style.transition = 'transform 0.35s ease';
+
+    // Mover children al track
+    while (row.firstChild) {
+        track.appendChild(row.firstChild);
+    }
+    row.appendChild(track);
+
+    // Crear controles
+    const btnPrev = document.createElement('button');
+    btnPrev.className = 'carousel-prev';
+    btnPrev.type = 'button';
+    btnPrev.innerHTML = '&larr;';
+    const btnNext = document.createElement('button');
+    btnNext.className = 'carousel-next';
+    btnNext.type = 'button';
+    btnNext.innerHTML = '&rarr;';
+
+    // Estilos simples a botones (se puede mover a CSS)
+    [btnPrev, btnNext].forEach(b => {
+        b.style.position = 'absolute';
+        b.style.top = '50%';
+        b.style.transform = 'translateY(-50%)';
+        b.style.zIndex = '20';
+        b.style.background = 'rgba(0,0,0,0.4)';
+        b.style.color = '#fff';
+        b.style.border = 'none';
+        b.style.padding = '6px 10px';
+        b.style.cursor = 'pointer';
+        b.style.borderRadius = '4px';
+    });
+    btnPrev.style.left = '8px';
+    btnNext.style.right = '8px';
+
+    row.appendChild(btnPrev);
+    row.appendChild(btnNext);
+
+    let itemsPerView = 4;
+    const getItemsPerView = () => {
+        const w = window.innerWidth;
+        if (w >= 992) return 4;
+        if (w >= 768) return 2;
+        return 1;
+    };
+
+    let currentIndex = 0;
+    const update = () => {
+        itemsPerView = getItemsPerView();
+        const totalItems = track.children.length;
+        const itemWidthPercent = 100 / itemsPerView;
+        const maxIndex = Math.max(0, Math.ceil(totalItems / itemsPerView) - 1);
+        if (currentIndex > maxIndex) currentIndex = maxIndex;
+        track.style.width = `${(totalItems * itemWidthPercent)}%`;
+        // set each child flex-basis
+        for (const child of track.children) {
+            child.style.flex = `0 0 ${itemWidthPercent}%`;
+        }
+        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        btnPrev.disabled = currentIndex === 0;
+        btnNext.disabled = currentIndex >= maxIndex;
+    };
+
+    btnPrev.addEventListener('click', () => {
+        if (currentIndex > 0) currentIndex -= 1;
+        update();
+    });
+
+    btnNext.addEventListener('click', () => {
+        currentIndex += 1;
+        update();
+    });
+
+    // Resize handler
+    let resizeTimeout;
+    const onResize = () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(update, 150);
+    };
+    window.addEventListener('resize', onResize);
+
+    // marcar inicializado
+    row.dataset.carouselInitialized = '1';
+    update();
+}
 
 
 
