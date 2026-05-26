@@ -758,14 +758,18 @@ function setupCarousel(row) {
         const itemWidthPercent = 100 / itemsPerView;
         const maxIndex = Math.max(0, Math.ceil(totalItems / itemsPerView) - 1);
         if (currentIndex > maxIndex) currentIndex = maxIndex;
-        track.style.width = `${(totalItems * itemWidthPercent)}%`;
+        
+        // El track solo ocupa el espacio de los items visibles
+        track.style.width = `100%`;
         
         // set each child flex-basis
         for (const child of track.children) {
-            child.style.flex = `0 0 ${itemWidthPercent}%`;
+            child.style.flex = `0 0 calc(100% / ${itemsPerView})`;
         }
         
-        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        // Calcular el desplazamiento basado en el índice de página
+        const translatePercent = currentIndex * 100;
+        track.style.transform = `translateX(-${translatePercent}%)`;
         btnPrev.disabled = currentIndex === 0;
         btnNext.disabled = currentIndex >= maxIndex;
     };
