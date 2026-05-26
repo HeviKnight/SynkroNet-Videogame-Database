@@ -105,6 +105,13 @@ const heroSection = (() => {
         }
 
         console.log('Hero: Rellenando hero section con:', game.name);
+        
+        // Verificar visibilidad del elemento
+        const heroStyle = window.getComputedStyle(heroSection);
+        console.log('Hero: display:', heroStyle.display);
+        console.log('Hero: visibility:', heroStyle.visibility);
+        console.log('Hero: opacity:', heroStyle.opacity);
+        console.log('Hero: color:', heroStyle.color);
 
         // Image
         const imgWrapper = heroSection.querySelector('.hero-image-wrapper img');
@@ -132,7 +139,8 @@ const heroSection = (() => {
         if (desc) {
             const descText = game.description_raw || 'Sin descripción disponible';
             desc.textContent = descText;
-            console.log('Hero: Descripción actualizada (', descText.length, 'caracteres)');
+            console.log('Hero: Descripción actualizada (', descText.length, 'caracteres):', descText.substring(0, 50));
+            console.log('Hero: description_raw completo:', game.description_raw);
         } else {
             console.error('Hero: No se encontró .hero-content > div:first-child p');
         }
