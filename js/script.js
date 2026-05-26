@@ -109,23 +109,32 @@ const heroSection = (() => {
         // Image
         const imgWrapper = heroSection.querySelector('.hero-image-wrapper img');
         if (imgWrapper) {
-            imgWrapper.src = game.background_image || 'https://picsum.photos/1000/';
+            const imgSrc = game.background_image || 'https://picsum.photos/1000/';
+            imgWrapper.src = imgSrc;
             imgWrapper.alt = game.name || 'Game';
-            console.log('Hero: Imagen actualizada');
+            console.log('Hero: Imagen actualizada a:', imgSrc);
+        } else {
+            console.error('Hero: No se encontró .hero-image-wrapper img');
         }
 
         // Title
         const title = heroSection.querySelector('.hero-content > div:first-child h1');
         if (title) {
-            title.textContent = game.name || 'Unknown';
-            console.log('Hero: Título actualizado');
+            const titleText = game.name || 'Unknown';
+            title.textContent = titleText;
+            console.log('Hero: Título actualizado a:', titleText);
+        } else {
+            console.error('Hero: No se encontró .hero-content > div:first-child h1');
         }
 
         // Description
         const desc = heroSection.querySelector('.hero-content > div:first-child p');
         if (desc) {
-            desc.textContent = game.description_raw || 'Sin descripción disponible';
-            console.log('Hero: Descripción actualizada');
+            const descText = game.description_raw || 'Sin descripción disponible';
+            desc.textContent = descText;
+            console.log('Hero: Descripción actualizada (', descText.length, 'caracteres)');
+        } else {
+            console.error('Hero: No se encontró .hero-content > div:first-child p');
         }
 
         // Tags (genres)
@@ -135,7 +144,9 @@ const heroSection = (() => {
             for (const genre of game.genres.slice(0, 4)) {
                 tagsContainer.innerHTML += `<span class="card-tag">${genre.name}</span>`;
             }
-            console.log('Hero: Géneros actualizados');
+            console.log('Hero: Géneros actualizados (', game.genres.length, 'total)');
+        } else {
+            console.warn('Hero: No se encontró .hero-tags o sin géneros');
         }
 
         // Platforms (stores)
@@ -150,7 +161,9 @@ const heroSection = (() => {
                     </a>
                 `;
             }
-            console.log('Hero: Plataformas actualizadas');
+            console.log('Hero: Plataformas actualizadas (', game.stores.length, 'tiendas)');
+        } else {
+            console.warn('Hero: No se encontró .hero-platforms-icons o sin tiendas');
         }
 
         // OS (platforms)
@@ -165,7 +178,9 @@ const heroSection = (() => {
                     </span>
                 `;
             }
-            console.log('Hero: SO actualizados');
+            console.log('Hero: SO actualizados (', game.platforms.length, 'plataformas)');
+        } else {
+            console.warn('Hero: No se encontró .hero-os-icons o sin plataformas');
         }
     };
 
