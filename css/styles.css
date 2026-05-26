@@ -2605,3 +2605,36 @@ select.btn-selector:active {
         }
     }
 }
+
+/* ============================================================================
+   CAROUSEL STYLES
+   ============================================================================ */
+
+.carousel-track {
+    overflow: hidden !important;
+}
+
+.carousel-prev,
+.carousel-next {
+    background: rgba(0, 0, 0, 0.5) !important;
+    color: var(--base-white) !important;
+    border: none !important;
+    padding: 8px 12px !important;
+    cursor: pointer !important;
+    border-radius: var(--border-radius-xs) !important;
+    font-size: 1.2rem !important;
+    transition: all var(--transition-fast) !important;
+    z-index: 25 !important;
+}
+
+.carousel-prev:hover:not(:disabled),
+.carousel-next:hover:not(:disabled) {
+    background: rgba(0, 0, 0, 0.8) !important;
+    transform: scale(1.1) !important;
+}
+
+.carousel-prev:disabled,
+.carousel-next:disabled {
+    opacity: 0.3 !important;
+    cursor: not-allowed !important;
+}

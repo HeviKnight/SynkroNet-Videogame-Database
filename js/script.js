@@ -202,6 +202,7 @@ const releasesSection = (() => {
         for (const game of cache.releases) {
             const title = game.name || 'Untitled';
             const dateStr = game.released || 'TBA';
+            const imageUrl = game.background_image || 'https://picsum.photos/400/160';
             let days = 0, hours = 0, minutes = 0;
 
             if (dateStr && dateStr !== 'TBA') {
@@ -212,7 +213,7 @@ const releasesSection = (() => {
                 minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             }
 
-            const html = createReleaseCard(title, dateStr, days, hours, minutes);
+            const html = createReleaseCard(title, dateStr, days, hours, minutes, imageUrl);
             const fragment = document.createRange().createContextualFragment(html);
             cache.container.appendChild(fragment);
         }
@@ -300,7 +301,8 @@ const devsSection = (() => {
         for (const dev of cache.devs) {
             const name = dev.name || 'Unknown';
             const role = dev.slug || 'Developer';
-            const html = createDeveloperCard(name, role);
+            const imageUrl = dev.image_background || 'https://picsum.photos/150/200';
+            const html = createDeveloperCard(name, role, imageUrl);
             const fragment = document.createRange().createContextualFragment(html);
             cache.container.appendChild(fragment);
         }
@@ -674,15 +676,18 @@ function setupCarousel(row) {
     if (!row) return;
     if (row.dataset.carouselInitialized === '1') return;
 
-    // Aplicar estilos básicos
-    row.style.overflow = 'hidden';
+    // Aplicar estilos básicos - permitir sombras del hover
     row.style.position = 'relative';
+    row.style.overflow = 'visible';
+    row.style.paddingLeft = '40px';
+    row.style.paddingRight = '40px';
 
     const track = document.createElement('div');
     track.className = 'carousel-track';
     track.style.display = 'flex';
     track.style.gap = '1rem';
     track.style.transition = 'transform 0.35s ease';
+    track.style.overflow = 'hidden';
 
     // Mover children al track
     while (row.firstChild) {
