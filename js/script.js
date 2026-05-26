@@ -137,10 +137,11 @@ const heroSection = (() => {
         // Description
         const desc = heroSection.querySelector('.hero-content > div:first-child p');
         if (desc) {
-            const descText = game.description_raw || 'Sin descripción disponible';
+            // Intentar múltiples campos para la descripción
+            const descText = game.description || game.description_raw || game.details || 'Mejor juego según Metacritic';
             desc.textContent = descText;
             console.log('Hero: Descripción actualizada (', descText.length, 'caracteres):', descText.substring(0, 50));
-            console.log('Hero: description_raw completo:', game.description_raw);
+            console.log('Hero: Campos disponibles:', Object.keys(game).filter(k => k.includes('desc') || k.includes('detail')));
         } else {
             console.error('Hero: No se encontró .hero-content > div:first-child p');
         }
