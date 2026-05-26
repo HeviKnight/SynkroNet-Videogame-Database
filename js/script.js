@@ -95,6 +95,8 @@ const heroSection = (() => {
     const fillHero = (game) => {
         if (!game) return;
 
+        
+
         const heroSection = document.querySelector('.section-hero');
         if (!heroSection) return;
 
@@ -110,6 +112,7 @@ const heroSection = (() => {
         // Description
         const desc = heroSection.querySelector('.hero-content > div:first-child p');
         if (desc) desc.textContent = game.description || 'Sin descripción disponible';
+        console.log(game);
 
         // Tags (genres)
         const tagsContainer = heroSection.querySelector('.hero-tags');
