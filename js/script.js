@@ -2,142 +2,77 @@
 // RAWG API - Direct calls from JavaScript
 // ============================================
 
+const endpoints = {
+    games: 'games',
+    developers: 'developers',
+    platforms: 'platforms',
+    genres: 'genres',
+    tags: 'tags'
+};
+
 const externalGames = (() => {
-    const CACHE_KEY = 'rawg_games_cache';
-    const CACHE_EXPIRY = 7 * 24 * 60 * 60 * 1000; // 7 días
-    const RAWG_BASE_URL = 'https://api.rawg.io/api/games';
-    let RAWG_API_KEY = null;
+    const RAWG_BASE_URL = 'https://api.rawg.io/api';
+    let apiKey = null;
 
-    /**
-     * Obtiene la API KEY desde el servidor
-     */
+    // Obtiene la API key del servidor (solo en memoria)
     const loadApiKey = async () => {
-        if (RAWG_API_KEY) return RAWG_API_KEY;
-        
+        if (apiKey) return apiKey;
         try {
-            const response = await fetch('./api/getApiKey.php');
-            const data = await response.json();
-            
-            if (data.success) {
-                RAWG_API_KEY = data.apiKey;
-                return RAWG_API_KEY;
-            } else {
-                console.error('Error loading API key:', data.error);
-                return null;
+            const res = await fetch('./api/getApiKey.php');
+            const json = await res.json();
+            if (json && json.success && json.apiKey) {
+                apiKey = json.apiKey;
+                return apiKey;
             }
-        } catch (error) {
-            console.error('Error fetching API key:', error);
+            console.error('No se obtuvo apiKey:', json && json.error);
+            return null;
+        } catch (err) {
+            console.error('Error cargando apiKey:', err);
             return null;
         }
     };
 
-    /**
-     * Obtiene datos en caché o null si expiró
-     */
-    const getCachedData = (cacheKey) => {
-        try {
-            const cached = localStorage.getItem(cacheKey);
-            if (!cached) return null;
-            
-            const { data, timestamp } = JSON.parse(cached);
-            if (Date.now() - timestamp > CACHE_EXPIRY) {
-                localStorage.removeItem(cacheKey);
-                return null;
-            }
-            
-            return data;
-        } catch (error) {
-            console.error('Error reading cache:', error);
-            return null;
+    // Helper legible para detectar URLs absolutas
+    const isAbsoluteUrl = (str) => typeof str === 'string' && (str.startsWith('http://') || str.startsWith('https://'));
+
+    // Fetch sencillo: recibe una URL completa o una clave de `endpoints`, params y opciones
+    // opciones: { onlyResults: boolean } -> si true devuelve json.results cuando exista
+    const fetchUrl = async (endpointOrUrl = 'games', params = {}, options = {}) => {
+        const key = await loadApiKey();
+        if (!key) throw new Error('API key no disponible');
+
+        let url;
+        if (isAbsoluteUrl(endpointOrUrl)) {
+            // URL absoluta: agregamos params tal cual (no añadimos la key automáticamente)
+            url = new URL(endpointOrUrl);
+            url.search = new URLSearchParams(params).toString();
+        } else {
+            const path = endpoints[endpointOrUrl] || endpointOrUrl;
+            url = new URL(`${RAWG_BASE_URL}/${path}`);
+            url.search = new URLSearchParams({ key, ...params }).toString();
         }
+
+        const res = await fetch(url.toString());
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+
+        // Si solicitan solo los resultados y existe la propiedad results, devolvemos el array
+        if (options.onlyResults && json && Array.isArray(json.results)) {
+            return json.results;
+        }
+
+        return json;
     };
 
-    /**
-     * Guarda datos en caché con timestamp
-     */
-    const setCachedData = (data, cacheKey) => {
-        try {
-            localStorage.setItem(cacheKey, JSON.stringify({
-                data,
-                timestamp: Date.now()
-            }));
-        } catch (error) {
-            console.error('Error setting cache:', error);
-        }
-    };
-
-    /**
-     * Llamada estructurada a RAWG API
-     */
-    const fetchFromRAWG = async (params = {}) => {
-        try {
-            const apiKey = await loadApiKey();
-            if (!apiKey) {
-                throw new Error('API key no disponible');
-            }
-
-            const query = new URLSearchParams({
-                key: apiKey,
-                ...params
-            }).toString();
-            
-            const url = `${RAWG_BASE_URL}?${query}`;
-            const response = await fetch(url);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            return data.results || [];
-        } catch (error) {
-            console.error('Error fetching from RAWG:', error);
-            return [];
-        }
-    };
-
-    /**
-     * Obtiene los 10 juegos más populares con caché
-     */
-    const getTopPopular = async () => {
-        const cacheKey = `${CACHE_KEY}_top_popular`;
-        const cached = getCachedData(cacheKey);
-        
-        if (cached) {
-            console.log('Top Popular Games: usando caché');
-            return cached;
-        }
-        
-        console.log('Top Popular Games: fetch desde RAWG API');
-        const games = await fetchFromRAWG({
-            ordering: '-rating',
-            page_size: 10
-        });
-        
-        if (games.length > 0) {
-            setCachedData(games, cacheKey);
-        }
-        
-        return games;
-    };
-
-    /**
-     * Limpia el caché
-     */
     const clearCache = () => {
-        const keys = Object.keys(localStorage);
-        keys.forEach(key => {
-            if (key.startsWith('rawg_games_cache')) {
-                localStorage.removeItem(key);
-            }
+        const prefix = 'rawg_games_cache';
+        Object.keys(localStorage).forEach(k => {
+            if (k.startsWith(prefix)) localStorage.removeItem(k);
         });
         console.log('Caché RAWG limpiado');
     };
 
-    return {
-        getTopPopular,
-        clearCache
-    };
+    return { clearCache, fetchUrl };
 })();
 
 // Global Functions ===== ACTUALIZAR CON EL JSON
@@ -173,24 +108,63 @@ const gamesSection = (() => {
             cache.container.innerHTML = '<p>No se encontraron juegos</p>';
             return;
         }
-        
-        cache.games.forEach(game => {
+
+        // Usamos for...of y DocumentFragment para crear y añadir cada card
+        for (const game of cache.games) {
             const rating = game.rating ? parseFloat(game.rating).toFixed(1) : 'N/A';
-            cache.container.insertAdjacentHTML('beforeend', 
-                createGameCard(game.name, rating, game.background_image)
-            );
-        });
+            // createGameCard devuelve HTML; convertimos a fragmento y lo añadimos
+            try {
+                const html = createGameCard(game.name, rating, game.background_image);
+                const fragment = document.createRange().createContextualFragment(html);
+                cache.container.appendChild(fragment);
+            } catch (e) {
+                // Fallback: añadir usando innerHTML seguro en caso de error
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = createGameCard(game.name, rating, game.background_image);
+                while (wrapper.firstChild) cache.container.appendChild(wrapper.firstChild);
+            }
+        }
     };
 
     return {
         init: async () => {
             initCache();
             if (!cache.container) return;
-            
+
+            const CACHE_KEY_LOCAL = 'rawg_games_cache_top_popular_array';
+            const CACHE_EXPIRY_LOCAL = 7 * 24 * 60 * 60 * 1000; // 7 días
+
             cache.container.innerHTML = '<p class="loading">Cargando juegos...</p>';
-            
+
+            // Intentar leer caché local
             try {
-                cache.games = await externalGames.getTopPopular();
+                const raw = localStorage.getItem(CACHE_KEY_LOCAL);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && parsed.data && Date.now() - parsed.timestamp <= CACHE_EXPIRY_LOCAL) {
+                        cache.games = parsed.data;
+                        renderGames();
+                        return;
+                    } else {
+                        localStorage.removeItem(CACHE_KEY_LOCAL);
+                    }
+                }
+            } catch (e) {
+                console.warn('Error leyendo caché local juegos:', e);
+            }
+
+            try {
+                // Llamada directa al fetch genérico que devuelve solo results
+                const games = await externalGames.fetchUrl('games', { ordering: '-rating', page_size: 10 }, { onlyResults: true });
+                cache.games = Array.isArray(games) ? games : [];
+
+                // Guardar en caché local con timestamp
+                try {
+                    localStorage.setItem(CACHE_KEY_LOCAL, JSON.stringify({ data: cache.games, timestamp: Date.now() }));
+                } catch (e) {
+                    console.warn('No se pudo guardar caché local de juegos:', e);
+                }
+
                 renderGames();
             } catch (error) {
                 console.error('Error loading games:', error);
@@ -201,62 +175,172 @@ const gamesSection = (() => {
 })();
 
 // ============================================
-// DEVELOPERS SECTION  
-// ============================================
-
-const devsSection = (() => {
-    const cache = {
-        container: null,
-        buttons: null
-    };
-
-    const initCache = () => {
-        cache.container = document.querySelector('.devs-module .card-content .row');
-        cache.buttons = document.querySelectorAll('.devs-module .section-buttons div:nth-child(1) button');
-    };
-
-    const createList = (titleName) => {
-        for (let i = 0; i < 6; i++) {
-            cache.container.insertAdjacentHTML('beforeend', createDeveloperCard(titleName));
-        }
-    };
-
-    return {
-        init: () => {
-            initCache();
-            if (!cache.container) return; // Salir si no existe el elemento
-            selectButtons(cache.buttons, cache.container, createList);
-            cache.container.innerHTML = '';
-            createList('Devs');
-        }
-    };
-})();
-
-// ============================================
-// RELEASES SECTION
+// RELEASES SECTION (Upcoming releases - RAWG)
 // ============================================
 
 const releasesSection = (() => {
-    const cache = {
-        container: null
-    };
+    const cache = { container: null, releases: [] };
 
     const initCache = () => {
         cache.container = document.querySelector('#releases-section .card-content .row');
     };
 
-    const createList = (titleName) => {
-        for (let i = 0; i < 3; i++) {
-            cache.container.insertAdjacentHTML('beforeend', createReleaseCard(titleName));
+    const renderReleases = () => {
+        if (!cache.container) return;
+        cache.container.innerHTML = '';
+        if (!cache.releases || cache.releases.length === 0) {
+            cache.container.innerHTML = '<p>No upcoming releases</p>';
+            return;
+        }
+
+        for (const game of cache.releases) {
+            const title = game.name || 'Untitled';
+            const dateStr = game.released || 'TBA';
+            let days = 0, hours = 0, minutes = 0;
+
+            if (dateStr && dateStr !== 'TBA') {
+                const target = new Date(dateStr);
+                const diff = Math.max(0, target.getTime() - Date.now());
+                days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            }
+
+            const html = createReleaseCard(title, dateStr, days, hours, minutes);
+            const fragment = document.createRange().createContextualFragment(html);
+            cache.container.appendChild(fragment);
         }
     };
 
     return {
-        init: () => {
+        init: async () => {
             initCache();
-            if (!cache.container) return; // Salir si no existe el elemento
-            cache.container.innerHTML = '';
-            createList('Upcoming');
+            if (!cache.container) return;
+
+            const CACHE_KEY_LOCAL = 'rawg_releases_cache_upcoming_3';
+            const CACHE_EXPIRY_LOCAL = 7 * 24 * 60 * 60 * 1000; // 7 días
+
+            cache.container.innerHTML = '<p class="loading">Cargando lanzamientos...</p>';
+
+            // try local cache
+            try {
+                const raw = localStorage.getItem(CACHE_KEY_LOCAL);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && parsed.data && Date.now() - parsed.timestamp <= CACHE_EXPIRY_LOCAL) {
+                        cache.releases = parsed.data;
+                        renderReleases();
+                        return;
+                    } else {
+                        localStorage.removeItem(CACHE_KEY_LOCAL);
+                    }
+                }
+            } catch (e) {
+                console.warn('Error leyendo caché local releases:', e);
+            }
+
+            try {
+                // fechas: desde hoy hasta +1 año
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                const start = `${yyyy}-${mm}-${dd}`;
+
+                const nextYear = new Date(today);
+                nextYear.setFullYear(nextYear.getFullYear() + 1);
+                const nyy = nextYear.getFullYear();
+                const nmm = String(nextYear.getMonth() + 1).padStart(2, '0');
+                const ndd = String(nextYear.getDate()).padStart(2, '0');
+                const end = `${nyy}-${nmm}-${ndd}`;
+
+                const games = await externalGames.fetchUrl('games', { dates: `${start},${end}`, ordering: 'released', page_size: 3 }, { onlyResults: true });
+                cache.releases = Array.isArray(games) ? games : [];
+
+                try {
+                    localStorage.setItem(CACHE_KEY_LOCAL, JSON.stringify({ data: cache.releases, timestamp: Date.now() }));
+                } catch (e) {
+                    console.warn('No se pudo guardar caché local de releases:', e);
+                }
+
+                renderReleases();
+            } catch (err) {
+                console.error('Error fetching releases:', err);
+                cache.container.innerHTML = '<p>Error al cargar lanzamientos</p>';
+            }
+        }
+    };
+})();
+
+// ============================================
+// DEVELOPERS SECTION (Top 10 developers - RAWG)
+// ============================================
+
+const devsSection = (() => {
+    const cache = { container: null, devs: [] };
+
+    const initCache = () => {
+        cache.container = document.querySelector('.devs-module .card-content .row');
+    };
+
+    const renderDevs = () => {
+        if (!cache.container) return;
+        cache.container.innerHTML = '';
+        if (!cache.devs || cache.devs.length === 0) {
+            cache.container.innerHTML = '<p>No se encontraron desarrolladores</p>';
+            return;
+        }
+
+        for (const dev of cache.devs) {
+            const name = dev.name || 'Unknown';
+            const role = dev.slug || 'Developer';
+            const html = createDeveloperCard(name, role);
+            const fragment = document.createRange().createContextualFragment(html);
+            cache.container.appendChild(fragment);
+        }
+    };
+
+    return {
+        init: async () => {
+            initCache();
+            if (!cache.container) return;
+
+            const CACHE_KEY_LOCAL = 'rawg_devs_cache_top_10';
+            const CACHE_EXPIRY_LOCAL = 7 * 24 * 60 * 60 * 1000; // 7 días
+
+            cache.container.innerHTML = '<p class="loading">Cargando desarrolladores...</p>';
+
+            try {
+                const raw = localStorage.getItem(CACHE_KEY_LOCAL);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && parsed.data && Date.now() - parsed.timestamp <= CACHE_EXPIRY_LOCAL) {
+                        cache.devs = parsed.data;
+                        renderDevs();
+                        return;
+                    } else {
+                        localStorage.removeItem(CACHE_KEY_LOCAL);
+                    }
+                }
+            } catch (e) {
+                console.warn('Error leyendo caché local devs:', e);
+            }
+
+            try {
+                const devs = await externalGames.fetchUrl('developers', { page_size: 10 }, { onlyResults: true });
+                cache.devs = Array.isArray(devs) ? devs : [];
+
+                try {
+                    localStorage.setItem(CACHE_KEY_LOCAL, JSON.stringify({ data: cache.devs, timestamp: Date.now() }));
+                } catch (e) {
+                    console.warn('No se pudo guardar caché local de devs:', e);
+                }
+
+                renderDevs();
+            } catch (err) {
+                console.error('Error fetching developers:', err);
+                cache.container.innerHTML = '<p>Error al cargar desarrolladores</p>';
+            }
         }
     };
 })();
@@ -515,16 +599,16 @@ const dualRangeSliders = (() => {
             const updateValues = () => {
                 const minIndex = parseInt(ranges[0].value);
                 const maxIndex = parseInt(ranges[1].value);
-                
+
                 const minLabel = getLabel(minIndex);
                 const maxLabel = getLabel(maxIndex);
                 const minValue = getValue(minIndex);
                 const maxValue = getValue(maxIndex);
-                
+
                 // Mostrar formato: "minLabel € · maxLabel €"
                 dmin.innerHTML = minLabel + ' €';
                 dmax.innerHTML = maxLabel + ' €';
-                
+
                 if (valueMin) valueMin.value = minValue;
                 if (valueMax) valueMax.value = maxValue;
                 updateTrack(drange);

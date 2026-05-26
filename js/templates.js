@@ -46,7 +46,7 @@ function createDeveloperCard(name = 'Developer Name', role = 'Lead Developer') {
     `;
 }
 
-function createReleaseCard(title = 'Game Title', date = '31/10/2024') {
+function createReleaseCard(title = 'Game Title', date = '31/10/2024', days = 0, hours = 0, minutes = 0) {
     return `
         <a href='paginas/game-file.php' class="col-lg-4 col-md-6">
             <div class="card-upcoming">
@@ -55,15 +55,15 @@ function createReleaseCard(title = 'Game Title', date = '31/10/2024') {
                     <span>${date}</span>
                     <div>
                         <div>
-                            <span>20</span>
+                            <span>${days}</span>
                             <span>Days</span>
                         </div>
                         <div>
-                            <span>05</span>
+                            <span>${hours}</span>
                             <span>Hours</span>
                         </div>
                         <div>
-                            <span>35</span>
+                            <span>${minutes}</span>
                             <span>Minutes</span>
                         </div>
                     </div>
