@@ -88,6 +88,143 @@ function selectButtons(buttons, container, createListFn) {
 }
 
 // ============================================
+// HERO SECTION (Best game by Metacritic)
+// ============================================
+
+const heroSection = (() => {
+    const fillHero = (game) => {
+        if (!game) return;
+
+        const heroSection = document.querySelector('.section-hero');
+        if (!heroSection) return;
+
+        // Image
+        const imgWrapper = heroSection.querySelector('.hero-image-wrapper img');
+        if (imgWrapper) imgWrapper.src = game.background_image || 'https://picsum.photos/1000/';
+        if (imgWrapper) imgWrapper.alt = game.name || 'Game';
+
+        // Title
+        const title = heroSection.querySelector('.hero-content > div:first-child h1');
+        if (title) title.textContent = game.name || 'Unknown';
+
+        // Description
+        const desc = heroSection.querySelector('.hero-content > div:first-child p');
+        if (desc) desc.textContent = game.description_raw || 'Sin descripción disponible';
+
+        // Tags (genres)
+        const tagsContainer = heroSection.querySelector('.hero-tags');
+        if (tagsContainer && game.genres && game.genres.length > 0) {
+            tagsContainer.innerHTML = '';
+            for (const genre of game.genres.slice(0, 4)) {
+                tagsContainer.innerHTML += `<span class="card-tag">${genre.name}</span>`;
+            }
+        }
+
+        // Platforms (stores)
+        const platformsContainer = heroSection.querySelector('.hero-platforms-icons');
+        if (platformsContainer && game.stores && game.stores.length > 0) {
+            platformsContainer.innerHTML = '';
+            for (const store of game.stores.slice(0, 3)) {
+                const storeIcon = getStoreIcon(store.store.slug);
+                platformsContainer.innerHTML += `
+                    <a href="#" title="${store.store.name}" class="platform-icon">
+                        <i class="${storeIcon}"></i>
+                    </a>
+                `;
+            }
+        }
+
+        // OS (platforms)
+        const osContainer = heroSection.querySelector('.hero-os-icons');
+        if (osContainer && game.platforms && game.platforms.length > 0) {
+            osContainer.innerHTML = '';
+            for (const platform of game.platforms.slice(0, 3)) {
+                const osIcon = getOSIcon(platform.platform.slug);
+                osContainer.innerHTML += `
+                    <span class="os-icon" title="${platform.platform.name}">
+                        <i class="${osIcon}"></i>
+                    </span>
+                `;
+            }
+        }
+    };
+
+    const getStoreIcon = (storeName) => {
+        const iconMap = {
+            'steam': 'bi bi-steam',
+            'epic-games': 'bi bi-joystick',
+            'gog': 'bi bi-globe',
+            'playstation': 'bi bi-playstation',
+            'xbox': 'bi bi-xbox',
+            'nintendo': 'bi bi-controller'
+        };
+        return iconMap[storeName] || 'bi bi-bag';
+    };
+
+    const getOSIcon = (osName) => {
+        const iconMap = {
+            'pc': 'bi bi-windows',
+            'windows': 'bi bi-windows',
+            'macos': 'bi bi-apple',
+            'mac': 'bi bi-apple',
+            'linux': 'bi bi-ubuntu',
+            'playstation': 'bi bi-playstation',
+            'xbox': 'bi bi-xbox',
+            'nintendo': 'bi bi-controller',
+            'ios': 'bi bi-apple',
+            'android': 'bi bi-android'
+        };
+        return iconMap[osName] || 'bi bi-joystick';
+    };
+
+    return {
+        init: async () => {
+            const CACHE_KEY_LOCAL = 'rawg_hero_cache_best_metacritic';
+            const CACHE_EXPIRY_LOCAL = 7 * 24 * 60 * 60 * 1000; // 7 días
+
+            // Intentar leer caché
+            try {
+                const raw = localStorage.getItem(CACHE_KEY_LOCAL);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && parsed.data && Date.now() - parsed.timestamp <= CACHE_EXPIRY_LOCAL) {
+                        fillHero(parsed.data);
+                        return;
+                    } else {
+                        localStorage.removeItem(CACHE_KEY_LOCAL);
+                    }
+                }
+            } catch (e) {
+                console.warn('Error leyendo caché hero:', e);
+            }
+
+            try {
+                // Obtener juego mejor valorado por metacritic
+                const games = await externalGames.fetchUrl('games', { 
+                    ordering: '-metacritic',
+                    page_size: 1
+                }, { onlyResults: true });
+
+                if (games && games.length > 0) {
+                    const bestGame = games[0];
+                    
+                    // Guardar en caché
+                    try {
+                        localStorage.setItem(CACHE_KEY_LOCAL, JSON.stringify({ data: bestGame, timestamp: Date.now() }));
+                    } catch (e) {
+                        console.warn('No se pudo guardar caché hero:', e);
+                    }
+
+                    fillHero(bestGame);
+                }
+            } catch (err) {
+                console.error('Error fetching best game:', err);
+            }
+        }
+    };
+})();
+
+// ============================================
 // GAMES SECTION (RAWG API - Top 10 Popular)
 // ============================================
 
@@ -676,6 +813,7 @@ const dualRangeSliders = (() => {
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    heroSection.init();
     gamesSection.init();
     devsSection.init();
     releasesSection.init();

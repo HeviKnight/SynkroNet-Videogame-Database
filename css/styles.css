@@ -2175,6 +2175,7 @@ select.btn-selector:active {
 #home .container {
     max-width: 100%;
     width: 100%;
+    overflow: hidden;
 }
 
 @media (max-width: 1024px) {
