@@ -2429,7 +2429,7 @@ select.btn-selector:active {
             gap: 8px;
             h1 {
                 font-size: 1.5rem;
-                color: var(--base-white);
+                color: var(--base-white) !important;
             }
 
             p {

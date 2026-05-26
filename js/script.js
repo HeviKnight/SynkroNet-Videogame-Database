@@ -93,25 +93,40 @@ function selectButtons(buttons, container, createListFn) {
 
 const heroSection = (() => {
     const fillHero = (game) => {
-        if (!game) return;
-
-        
+        if (!game) {
+            console.warn('Hero: No hay juego para rellenar');
+            return;
+        }
 
         const heroSection = document.querySelector('.section-hero');
-        if (!heroSection) return;
+        if (!heroSection) {
+            console.error('Hero: No se encontró elemento .section-hero');
+            return;
+        }
+
+        console.log('Hero: Rellenando hero section con:', game.name);
 
         // Image
         const imgWrapper = heroSection.querySelector('.hero-image-wrapper img');
-        if (imgWrapper) imgWrapper.src = game.background_image || 'https://picsum.photos/1000/';
-        if (imgWrapper) imgWrapper.alt = game.name || 'Game';
+        if (imgWrapper) {
+            imgWrapper.src = game.background_image || 'https://picsum.photos/1000/';
+            imgWrapper.alt = game.name || 'Game';
+            console.log('Hero: Imagen actualizada');
+        }
 
         // Title
         const title = heroSection.querySelector('.hero-content > div:first-child h1');
-        if (title) title.textContent = game.name || 'Unknown';
+        if (title) {
+            title.textContent = game.name || 'Unknown';
+            console.log('Hero: Título actualizado');
+        }
 
         // Description
         const desc = heroSection.querySelector('.hero-content > div:first-child p');
-        if (desc) desc.textContent = game.description || 'Sin descripción disponible';
+        if (desc) {
+            desc.textContent = game.description_raw || 'Sin descripción disponible';
+            console.log('Hero: Descripción actualizada');
+        }
 
         // Tags (genres)
         const tagsContainer = heroSection.querySelector('.hero-tags');
@@ -120,6 +135,7 @@ const heroSection = (() => {
             for (const genre of game.genres.slice(0, 4)) {
                 tagsContainer.innerHTML += `<span class="card-tag">${genre.name}</span>`;
             }
+            console.log('Hero: Géneros actualizados');
         }
 
         // Platforms (stores)
@@ -134,6 +150,7 @@ const heroSection = (() => {
                     </a>
                 `;
             }
+            console.log('Hero: Plataformas actualizadas');
         }
 
         // OS (platforms)
@@ -148,6 +165,7 @@ const heroSection = (() => {
                     </span>
                 `;
             }
+            console.log('Hero: SO actualizados');
         }
     };
 
@@ -207,8 +225,11 @@ const heroSection = (() => {
                     page_size: 1
                 }, { onlyResults: true });
 
+                console.log('Hero: Respuesta de API:', games);
+
                 if (games && games.length > 0) {
                     const bestGame = games[0];
+                    console.log('Hero: Rellenando con:', bestGame.name);
                     
                     // Guardar en caché
                     try {
@@ -218,6 +239,8 @@ const heroSection = (() => {
                     }
 
                     fillHero(bestGame);
+                } else {
+                    console.warn('Hero: No se obtuvieron juegos de la API');
                 }
             } catch (err) {
                 console.error('Error fetching best game:', err);
