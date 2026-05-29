@@ -51,23 +51,53 @@ function createGameCard(title = 'Título', score = 5, imageUrl = 'https://picsum
     `;
 }
 
-function createDeveloperCard(name = 'Developer Name', role = 'Lead Developer', imageUrl = 'https://picsum.photos/150/200', featuredGameTitle = 'Featured Game', featuredGameImage = '') {
+function createDeveloperCard(name = 'Developer Name', role = 'Lead Developer', imageUrl = 'https://picsum.photos/150/200', featuredGameTitle = 'Featured Game', featuredGameImage = '', developerData = {}) {
+    // Generar un ID único para el formulario
+    const formId = `dev-form-${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Preparar datos para enviar
+    const dataStr = JSON.stringify({
+        name: developerData.name || name,
+        role: developerData.slug || role,
+        image: developerData.image_background || imageUrl,
+        image_background: developerData.image_background || imageUrl,
+        biography: developerData.biography || '',
+        company: developerData.company || '',
+        games: developerData.games || [],
+        id: developerData.id || null,
+        description: developerData.description || '',
+        positions: developerData.positions || [],
+        social: developerData.social || {}
+    });
+    
+    // Usar la URL configurada globalmente o fallback
+    const actionUrl = window.DEV_FILE_URL || './paginas/dev-file.php';
+    
     return `
+        <form id="${formId}" method="POST" action="${actionUrl}" style="display: none;">
+            <input type="hidden" name="developer_data" value='${dataStr.replace(/'/g, "&apos;")}'>
+        </form>
         <div class="col-lg-2 col-sm-4">
-            <div class="card-dev">
-                <div>
-                    <span><i class="bi bi-box-arrow-up-right"></i></span>
-                </div>
-                <img src="${imageUrl}" class="img-fluid" alt="${name}">
-                <div>
-                    <div class="featured-game">
-                        ${featuredGameImage ? `<img src="${featuredGameImage}" alt="${featuredGameTitle}" class="featured-game-img">` : ''}
-                        <span class="featured-game-title">${featuredGameTitle}</span>
-                    </div>
+            <button type="submit" form="${formId}" style="background: none; border: none; padding: 0; cursor: pointer; width: 100%;">
+                <div class="card-dev">
                     <div>
-                        <h5>${name}</h5>
-                        <p>${role}</p>
+                        <span><i class="bi bi-box-arrow-up-right"></i></span>
                     </div>
+                    <img src="${imageUrl}" class="img-fluid" alt="${name}">
+                    <div>
+                        <div class="featured-game">
+                            ${featuredGameImage ? `<img src="${featuredGameImage}" alt="${featuredGameTitle}" class="featured-game-img">` : ''}
+                            <span class="featured-game-title">${featuredGameTitle}</span>
+                        </div>
+                        <div>
+                            <h5>${name}</h5>
+                            <p>${role}</p>
+                        </div>
+                    </div>
+                </div>
+            </button>
+        </div>
+    `;
                 </div>
             </div>
         </div>

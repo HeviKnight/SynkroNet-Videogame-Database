@@ -4,6 +4,7 @@ include_once("componentes/sidebar.php");
 ?>
     <script>
         window.GAME_FILE_URL = './paginas/game-file.php';
+        window.DEV_FILE_URL = './paginas/dev-file.php';
     </script>
 
     <main id="home">

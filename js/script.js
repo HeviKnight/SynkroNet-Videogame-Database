@@ -456,7 +456,7 @@ const devsSection = (() => {
             const featuredGameTitle = (dev.games && dev.games[0]) ? dev.games[0].name : '';
             const featuredGameImage = (dev.games && dev.games[0]) ? dev.games[0].background_image : '';
             
-            const html = createDeveloperCard(name, role, imageUrl, featuredGameTitle, featuredGameImage);
+            const html = createDeveloperCard(name, role, imageUrl, featuredGameTitle, featuredGameImage, dev);
             const fragment = document.createRange().createContextualFragment(html);
             cache.container.appendChild(fragment);
         }
