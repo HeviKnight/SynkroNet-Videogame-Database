@@ -263,13 +263,13 @@ const gamesSection = (() => {
             const rating = game.rating ? parseFloat(game.rating).toFixed(1) : 'N/A';
             // createGameCard devuelve HTML; convertimos a fragmento y lo añadimos
             try {
-                const html = createGameCard(game.name, rating, game.background_image);
+                const html = createGameCard(game.name, rating, game.background_image, game);
                 const fragment = document.createRange().createContextualFragment(html);
                 cache.container.appendChild(fragment);
             } catch (e) {
                 // Fallback: añadir usando innerHTML seguro en caso de error
                 const wrapper = document.createElement('div');
-                wrapper.innerHTML = createGameCard(game.name, rating, game.background_image);
+                wrapper.innerHTML = createGameCard(game.name, rating, game.background_image, game);
                 while (wrapper.firstChild) cache.container.appendChild(wrapper.firstChild);
             }
         }
@@ -362,7 +362,7 @@ const releasesSection = (() => {
                 minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             }
 
-            const html = createReleaseCard(title, dateStr, days, hours, minutes, imageUrl);
+            const html = createReleaseCard(title, dateStr, days, hours, minutes, imageUrl, game);
             const fragment = document.createRange().createContextualFragment(html);
             cache.container.appendChild(fragment);
         }

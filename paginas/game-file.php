@@ -2,6 +2,41 @@
 $base_url = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
 $base_url = str_replace('/paginas', '', $base_url);
 include_once('../componentes/sidebar.php');
+
+// Procesar datos del juego enviados por POST
+$gameData = [];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['game_data'])) {
+    $gameData = json_decode($_POST['game_data'], true);
+}
+
+// Valores por defecto
+$gameName = $gameData['name'] ?? 'Tetris';
+$gameImage = $gameData['background_image'] ?? 'https://picsum.photos/600/300?random=1';
+$gameRating = $gameData['rating'] ?? 8.75;
+$gameDesc = $gameData['description'] ?? 'Lorem ipsum, dolor sit amet consectetur adipisicing elit.';
+$gameReleased = $gameData['released'] ?? '10/11/2012';
+$gameMetacritic = $gameData['metacritic'] ?? 87;
+$genres = $gameData['genres'] ?? [];
+$developers = $gameData['developers'] ?? [];
+$platforms = $gameData['platforms'] ?? [];
+
+// Construir string de géneros
+$genresStr = '';
+if (is_array($genres) && count($genres) > 0) {
+    $genreNames = array_map(function($g) { 
+        return is_array($g) ? ($g['name'] ?? '') : (is_object($g) ? ($g->name ?? '') : ''); 
+    }, $genres);
+    $genresStr = implode(', ', array_filter($genreNames));
+}
+
+// Construir string de desarrolladores
+$devsStr = '';
+if (is_array($developers) && count($developers) > 0) {
+    $devNames = array_map(function($d) { 
+        return is_array($d) ? ($d['name'] ?? '') : (is_object($d) ? ($d->name ?? '') : ''); 
+    }, $developers);
+    $devsStr = implode(', ', array_filter($devNames));
+}
 ?>
 
 <main id="home">
@@ -10,9 +45,9 @@ include_once('../componentes/sidebar.php');
         <!-- HERO SECTION -->
         <section class="section-hero-gamefile">
             <div>
-                <img src="https://picsum.photos/300/400?random=1" alt="TETRIS Cover">
+                <img src="<?php echo htmlspecialchars($gameImage); ?>" alt="<?php echo htmlspecialchars($gameName); ?> Cover">
                 <div class="info">
-                    <img src="https://picsum.photos/600/300?random=1" alt="TETRIS Cover">
+                    <img src="<?php echo htmlspecialchars($gameImage); ?>" alt="<?php echo htmlspecialchars($gameName); ?> Cover">
                     <div>
                         <a href="#" class="btn btn-dark">
                             <i class="bi bi-pencil"></i>
@@ -30,8 +65,8 @@ include_once('../componentes/sidebar.php');
                 </div>
             </div>
             <div>
-                <h2>Tetris</h2>
-                <p>Alekséi Pázhitnov</p>
+                <h2><?php echo htmlspecialchars($gameName); ?></h2>
+                <p><?php echo htmlspecialchars($devsStr ?: 'Desarrollador desconocido'); ?></p>
             </div>
         </section>
 
@@ -49,12 +84,25 @@ include_once('../componentes/sidebar.php');
                 <div>
                     <div class="rating">
                         <span>Valoración:</span>
-                        <span>8.75 [250 Reviews]</span>
-                        <span><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></span>
+                        <span><?php echo number_format($gameRating, 2); ?> [Reviews]</span>
+                        <span>
+                            <?php 
+                            $stars = round($gameRating / 2);
+                            for ($i = 0; $i < 5; $i++) {
+                                if ($i < $stars) {
+                                    echo '<i class="bi bi-star-fill"></i>';
+                                } else {
+                                    echo '<i class="bi bi-star"></i>';
+                                }
+                            }
+                            ?>
+                        </span>
                     </div>
-                    <p>Fecha de Lanzamiento: 10/11/2012</p>
-                    <p>Estado del juego: Publicado</p>
-                    <p>Añadido a 1000 colecciones</p>
+                    <p>Fecha de Lanzamiento: <?php echo htmlspecialchars($gameReleased); ?></p>
+                    <p>Metacritic: <?php echo htmlspecialchars($gameMetacritic ?? 'N/A'); ?></p>
+                    <?php if (!empty($genresStr)): ?>
+                        <p>Géneros: <?php echo htmlspecialchars($genresStr); ?></p>
+                    <?php endif; ?>
                     <a href="#" class="btn btn-primary">Añadir a mi colección</a>
                     <a href="#" class="btn btn-primary">Comunidad</a>
                 </div>
@@ -70,7 +118,7 @@ include_once('../componentes/sidebar.php');
                     </div>
                     <a href="#" class="btn btn-dark"><i class="bi bi-box-arrow-up-right"></i> Dejar una reseña</a>
                     <h3>Descripción</h3>
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fugit atque sapiente corporis? Incidunt nam aspernatur hic enim sed aliquid explicabo suscipit saepe dignissimos dolorum et vero, fugit omnis, debitis inventore voluptas, eius nemo nesciunt dolore? Quas, itaque tenetur architecto rem perferendis dignissimos commodi provident pariatur earum, dolore aspernatur ducimus. Eveniet!</p>
+                    <p><?php echo htmlspecialchars($gameDesc); ?></p>
                     <div style="display: flex; gap: 12px; margin-top: 16px;">
                         <a href="#" style="color: var(--text-main); font-size: 1.5rem; transition: all var(--transition);"><i class="bi bi-facebook"></i></a>
                         <a href="#" style="color: var(--text-main); font-size: 1.5rem; transition: all var(--transition);"><i class="bi bi-twitter"></i></a>

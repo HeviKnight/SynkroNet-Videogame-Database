@@ -3,24 +3,47 @@
  * Funciones simples para generar cards con valores por defecto
  */
 
-function createGameCard(title = 'Título', score = 5, imageUrl = 'https://picsum.photos/300/150') {
+function createGameCard(title = 'Título', score = 5, imageUrl = 'https://picsum.photos/300/150', gameData = {}) {
+    // Generar un ID único para el formulario
+    const formId = `game-form-${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Preparar datos para enviar
+    const dataStr = JSON.stringify({
+        name: gameData.name || title,
+        rating: gameData.rating || score,
+        background_image: gameData.background_image || imageUrl,
+        id: gameData.id || null,
+        description: gameData.description_raw || '',
+        genres: gameData.genres || [],
+        platforms: gameData.platforms || [],
+        stores: gameData.stores || [],
+        released: gameData.released || '',
+        metacritic: gameData.metacritic || null,
+        developers: gameData.developers || []
+    });
+    
     return `
-        <a href='paginas/game-file.php' class="col-lg-3 col-sm-6">
-            <div class="card-game">
-                <div>
-                    <span><i class="bi bi-box-arrow-up-right"></i></span>
-                </div>
-                <img src="${imageUrl}" alt="${title}">
-                <div>
-                    <div class="tags">
-                        <div class="card-tag"><i class="bi bi-star-fill"></i>${score}</div>
-                    </div>
+        <form id="${formId}" method="POST" action="/SynkroNET/paginas/game-file.php" style="display: none;">
+            <input type="hidden" name="game_data" value='${dataStr.replace(/'/g, "&apos;")}'>
+        </form>
+        <div class="col-lg-3 col-sm-6">
+            <button type="submit" form="${formId}" style="background: none; border: none; padding: 0; cursor: pointer; width: 100%;">
+                <div class="card-game">
                     <div>
-                        <h5>${title}</h5>
+                        <span><i class="bi bi-box-arrow-up-right"></i></span>
+                    </div>
+                    <img src="${imageUrl}" alt="${title}">
+                    <div>
+                        <div class="tags">
+                            <div class="card-tag"><i class="bi bi-star-fill"></i>${score}</div>
+                        </div>
+                        <div>
+                            <h5>${title}</h5>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </a>
+            </button>
+        </div>
     `;
 }
 
@@ -47,9 +70,30 @@ function createDeveloperCard(name = 'Developer Name', role = 'Lead Developer', i
     `;
 }
 
-function createReleaseCard(title = 'Game Title', date = '31/10/2024', days = 0, hours = 0, minutes = 0, imageUrl = 'https://picsum.photos/400/160') {
+function createReleaseCard(title = 'Game Title', date = '31/10/2024', days = 0, hours = 0, minutes = 0, imageUrl = 'https://picsum.photos/400/160', gameData = {}) {
+    // Generar un ID único para el formulario
+    const formId = `release-form-${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Preparar datos para enviar
+    const dataStr = JSON.stringify({
+        name: gameData.name || title,
+        rating: gameData.rating || 'N/A',
+        background_image: gameData.background_image || imageUrl,
+        id: gameData.id || null,
+        description: gameData.description_raw || '',
+        genres: gameData.genres || [],
+        platforms: gameData.platforms || [],
+        stores: gameData.stores || [],
+        released: gameData.released || date,
+        metacritic: gameData.metacritic || null,
+        developers: gameData.developers || []
+    });
+    
     return `
-        <a href='paginas/game-file.php' class="col-lg-4 col-md-6">
+        <form id="${formId}" method="POST" action="/SynkroNET/paginas/game-file.php" style="display: none;">
+            <input type="hidden" name="game_data" value='${dataStr.replace(/'/g, "&apos;")}'>
+        </form>
+        <button type="submit" form="${formId}" style="background: none; border: none; padding: 0; cursor: pointer; display: block; width: 100%;" class="col-lg-4 col-md-6">
             <div class="card-upcoming">
                 <img src="${imageUrl}" alt="${title}">
                 <div>
@@ -71,7 +115,7 @@ function createReleaseCard(title = 'Game Title', date = '31/10/2024', days = 0, 
                     <p>${title}</p>
                 </div>
             </div>
-        </a>
+        </button>
     `;
 }
 
