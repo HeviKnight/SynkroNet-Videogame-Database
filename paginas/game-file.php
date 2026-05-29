@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['game_data'])) {
 // Valores por defecto
 $gameName = $gameData['name'] ?? 'Tetris';
 $gameImage = $gameData['background_image'] ?? 'https://picsum.photos/600/300?random=1';
+$gameCover = $gameData['image'] ?? 'https://picsum.photos/225/300?random=1';
 $gameRating = $gameData['rating'] ?? 8.75;
 $gameDesc = $gameData['description'] ?? 'Lorem ipsum, dolor sit amet consectetur adipisicing elit.';
 $gameReleased = $gameData['released'] ?? '10/11/2012';
@@ -38,11 +39,6 @@ if (is_array($developers) && count($developers) > 0) {
     $devsStr = implode(', ', array_filter($devNames));
 }
 ?>
-    <style>
-        :root {
-            --game-bg-image: url('<?php echo htmlspecialchars($gameImage); ?>');
-        }
-    </style>
     <script>
         window.GAME_FILE_URL = './game-file.php';
     </script>
@@ -53,7 +49,7 @@ if (is_array($developers) && count($developers) > 0) {
         <!-- HERO SECTION -->
         <section class="section-hero-gamefile">
             <div style="background-image: url('<?php echo htmlspecialchars($gameImage); ?>');">
-                <img src="<?php echo htmlspecialchars($gameImage); ?>" alt="<?php echo htmlspecialchars($gameName); ?> Cover">
+                <img src="<?php echo htmlspecialchars($gameCover); ?>" alt="<?php echo htmlspecialchars($gameName); ?> Cover">
                 <div class="info">
                     <div>
                         <a href="#" class="btn btn-dark">

@@ -1041,7 +1041,7 @@ p{
     &>div:first-child{
         display: flex;
         justify-content: space-between;
-        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), var(--game-bg-image, url('https://picsum.photos/1000/')) center/cover;
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://picsum.photos/1000/') center/cover;
         margin-bottom: 80px;
         padding: 0 60px;
         border-radius: var(--border-radius);
@@ -1051,9 +1051,8 @@ p{
             top: 60px;
             height: 300px;
             width: 225px;
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-position: center;
+            object-fit: cover;
+            object-position: center;
         }
 
         .info{
