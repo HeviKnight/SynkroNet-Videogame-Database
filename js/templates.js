@@ -51,6 +51,54 @@ function createGameCard(title = 'Título', score = 5, imageUrl = 'https://picsum
     `;
 }
 
+function createCommunityGameCard(title = 'Título', score = 5, imageUrl = 'https://picsum.photos/300/150', gameData = {}) {
+    // Generar un ID único para el formulario
+    const formId = `community-form-${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Preparar datos para enviar
+    const dataStr = JSON.stringify({
+        name: gameData.name || title,
+        rating: gameData.rating || score,
+        background_image: gameData.background_image || imageUrl,
+        image: gameData.image || gameData.background_image || imageUrl,
+        id: gameData.id || null,
+        description: gameData.description_raw || '',
+        genres: gameData.genres || [],
+        platforms: gameData.platforms || [],
+        stores: gameData.stores || [],
+        released: gameData.released || '',
+        metacritic: gameData.metacritic || null,
+        developers: gameData.developers || []
+    });
+    
+    // Usar la URL configurada globalmente o fallback
+    const actionUrl = window.COMMUNITY_FILE_URL || './paginas/community-file.php';
+    
+    return `
+        <form id="${formId}" method="POST" action="${actionUrl}" style="display: none;">
+            <input type="hidden" name="game_data" value='${dataStr.replace(/'/g, "&apos;")}'>
+        </form>
+        <div class="col-lg-3 col-sm-6">
+            <button type="submit" form="${formId}" style="background: none; border: none; padding: 0; cursor: pointer; width: 100%;">
+                <div class="card-game">
+                    <div>
+                        <span><i class="bi bi-box-arrow-up-right"></i></span>
+                    </div>
+                    <img src="${imageUrl}" alt="${title}">
+                    <div>
+                        <div class="tags">
+                            <div class="card-tag"><i class="bi bi-star-fill"></i>${score}</div>
+                        </div>
+                        <div>
+                            <h5>${title}</h5>
+                        </div>
+                    </div>
+                </div>
+            </button>
+        </div>
+    `;
+}
+
 function createDeveloperCard(name = 'Developer Name', role = 'Lead Developer', imageUrl = 'https://picsum.photos/150/200', featuredGameTitle = 'Featured Game', featuredGameImage = '', developerData = {}) {
     // Generar un ID único para el formulario
     const formId = `dev-form-${Math.random().toString(36).substr(2, 9)}`;

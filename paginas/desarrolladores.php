@@ -42,11 +42,11 @@ include_once('../componentes/filter-component.php');
                         <div style="display: flex; align-items: center; gap: 12px;">
                             <div style="flex: 1; height: 1px; background-color: var(--border-sky);"></div>
                             <span style="white-space: nowrap; color: var(--text-main);">Ordenar por</span>
-                            <select class="form-control select-dark">
-                                <option value="relevancia-desc">Relevancia ▼</option>
-                                <option value="relevancia-asc">Relevancia ▲</option>
-                                <option value="nombre-asc">Nombre ▲</option>
-                                <option value="nombre-desc">Nombre ▼</option>
+                            <select class="form-control select-dark" id="devs-sort-select">
+                                <option value="-rating">Relevancia ▼</option>
+                                <option value="rating">Relevancia ▲</option>
+                                <option value="name">Nombre ▲</option>
+                                <option value="-name">Nombre ▼</option>
                             </select>
                         </div>
                     </div>

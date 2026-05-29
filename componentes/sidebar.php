@@ -124,6 +124,3 @@
 
     <!-- Header móvil - Solo visible en dispositivos móviles -->
     <div class="mobile-nav-header"></div>
-    
-    <!-- Módulo Sidebar - Consolidado (replaza sidebar-toggle.js y script.js sidebar logic) -->
-    <script src="<?php echo $base_url; ?>/js/sidebar.js"></script>

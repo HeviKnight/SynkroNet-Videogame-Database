@@ -14,14 +14,35 @@ const externalGames = (() => {
     const RAWG_BASE_URL = 'https://api.rawg.io/api';
     let apiKey = null;
 
+    // Calcula la ruta base del sitio dinámicamente
+    const getBasePath = () => {
+        // Obtener la ruta actual sin el archivo
+        let path = window.location.pathname;
+        // Si estamos en /paginas/algo.php, volver a la raíz
+        if (path.includes('/paginas/')) {
+            path = path.substring(0, path.indexOf('/paginas'));
+        }
+        // Si estamos en /index.php, ir a la raíz
+        if (path.endsWith('/index.php')) {
+            path = path.substring(0, path.lastIndexOf('/'));
+        }
+        // Asegurar que termine sin /
+        path = path.replace(/\/$/, '');
+        return path;
+    };
+
     // Obtiene la API key del servidor (solo en memoria)
     const loadApiKey = async () => {
         if (apiKey) return apiKey;
         try {
-            const res = await fetch('./api/getApiKey.php');
+            const basePath = getBasePath();
+            const apiUrl = `${basePath}/api/getApiKey.php`;
+            console.log('Intentando cargar API key desde:', apiUrl);
+            const res = await fetch(apiUrl);
             const json = await res.json();
             if (json && json.success && json.apiKey) {
                 apiKey = json.apiKey;
+                console.log('API key cargada exitosamente');
                 return apiKey;
             }
             console.error('No se obtuvo apiKey:', json && json.error);
@@ -595,7 +616,8 @@ const gamesGridSection = (() => {
         page: 1,
         isLoading: false,
         hasMore: true,
-        observer: null
+        observer: null,
+        ordering: '-rating'
     };
 
     const initCache = () => {
@@ -605,9 +627,16 @@ const gamesGridSection = (() => {
     const renderGames = (games) => {
         if (!cache.container || !games || games.length === 0) return;
 
+        // Detectar si estamos en la página de comunidad
+        const isCommunityPage = window.location.pathname.includes('/comunidad.php') || 
+                               document.querySelector('[data-page="comunidad"]')?.classList.contains('active');
+        
         for (const game of games) {
             const rating = game.rating ? parseFloat(game.rating).toFixed(1) : 'N/A';
-            const html = createGameCard(game.name, rating, game.background_image, game);
+            // Usar createCommunityGameCard en la página de comunidad, createGameCard en otras
+            const html = isCommunityPage 
+                ? createCommunityGameCard(game.name, rating, game.background_image, game)
+                : createGameCard(game.name, rating, game.background_image, game);
             cache.container.insertAdjacentHTML('beforeend', html);
         }
     };
@@ -620,8 +649,8 @@ const gamesGridSection = (() => {
         try {
             const games = await externalGames.fetchUrl('games', { 
                 page: cache.page,
-                page_size: 20,
-                ordering: '-rating'
+                page_size: 40,
+                ordering: cache.ordering
             }, { onlyResults: true });
 
             if (!Array.isArray(games) || games.length === 0) {
@@ -637,6 +666,35 @@ const gamesGridSection = (() => {
             cache.hasMore = false;
         } finally {
             cache.isLoading = false;
+        }
+    };
+
+    const resetAndReload = async () => {
+        cache.page = 1;
+        cache.games = [];
+        cache.hasMore = true;
+        if (cache.observer) cache.observer.disconnect();
+        cache.container.innerHTML = '<p class="loading">Cargando juegos...</p>';
+
+        try {
+            const games = await externalGames.fetchUrl('games', { 
+                page: 1,
+                page_size: 40,
+                ordering: cache.ordering
+            }, { onlyResults: true });
+
+            if (Array.isArray(games) && games.length > 0) {
+                cache.container.innerHTML = '';
+                cache.games = games;
+                cache.page = 2;
+                renderGames(games);
+                setupInfiniteScroll();
+            } else {
+                cache.container.innerHTML = '<p>No se encontraron juegos</p>';
+            }
+        } catch (err) {
+            console.error('Error reloading games:', err);
+            cache.container.innerHTML = '<p>Error al cargar los juegos</p>';
         }
     };
 
@@ -665,6 +723,16 @@ const gamesGridSection = (() => {
         cache.observer.observe(sentinel);
     };
 
+    const setupSortListener = () => {
+        const sortSelect = document.getElementById('games-sort-select');
+        if (!sortSelect) return;
+
+        sortSelect.addEventListener('change', (e) => {
+            cache.ordering = e.target.value;
+            resetAndReload();
+        });
+    };
+
     return {
         init: async () => {
             initCache();
@@ -676,8 +744,8 @@ const gamesGridSection = (() => {
                 // Cargar primer lote
                 const games = await externalGames.fetchUrl('games', { 
                     page: 1,
-                    page_size: 20,
-                    ordering: '-rating'
+                    page_size: 40,
+                    ordering: cache.ordering
                 }, { onlyResults: true });
 
                 if (Array.isArray(games) && games.length > 0) {
@@ -686,6 +754,7 @@ const gamesGridSection = (() => {
                     cache.page = 2;
                     renderGames(games);
                     setupInfiniteScroll();
+                    setupSortListener();
                 } else {
                     cache.container.innerHTML = '<p>No se encontraron juegos</p>';
                 }
@@ -741,7 +810,8 @@ const devsGridSection = (() => {
         page: 1,
         isLoading: false,
         hasMore: true,
-        observer: null
+        observer: null,
+        ordering: '-rating'
     };
 
     const initCache = () => {
@@ -771,7 +841,8 @@ const devsGridSection = (() => {
         try {
             const devs = await externalGames.fetchUrl('developers', { 
                 page: cache.page,
-                page_size: 20
+                page_size: 40,
+                ordering: cache.ordering
             }, { onlyResults: true });
 
             if (!Array.isArray(devs) || devs.length === 0) {
@@ -800,6 +871,45 @@ const devsGridSection = (() => {
         }
     };
 
+    const resetAndReload = async () => {
+        cache.page = 1;
+        cache.devs = [];
+        cache.hasMore = true;
+        if (cache.observer) cache.observer.disconnect();
+        cache.container.innerHTML = '<p class="loading">Cargando desarrolladores...</p>';
+
+        try {
+            const devs = await externalGames.fetchUrl('developers', { 
+                page: 1,
+                page_size: 40,
+                ordering: cache.ordering
+            }, { onlyResults: true });
+
+            if (Array.isArray(devs) && devs.length > 0) {
+                // Obtener juegos para cada desarrollador
+                const devsWithGames = await Promise.all(devs.map(async (dev) => {
+                    try {
+                        const games = await externalGames.fetchUrl(`developers/${dev.id}/games`, { page_size: 1 }, { onlyResults: true });
+                        return { ...dev, games: Array.isArray(games) ? games : [] };
+                    } catch (e) {
+                        return { ...dev, games: [] };
+                    }
+                }));
+
+                cache.container.innerHTML = '';
+                cache.devs = devsWithGames;
+                cache.page = 2;
+                renderDevs(devsWithGames);
+                setupInfiniteScroll();
+            } else {
+                cache.container.innerHTML = '<p>No se encontraron desarrolladores</p>';
+            }
+        } catch (err) {
+            console.error('Error reloading developers:', err);
+            cache.container.innerHTML = '<p>Error al cargar los desarrolladores</p>';
+        }
+    };
+
     const setupInfiniteScroll = () => {
         if (!cache.container) return;
 
@@ -825,6 +935,16 @@ const devsGridSection = (() => {
         cache.observer.observe(sentinel);
     };
 
+    const setupSortListener = () => {
+        const sortSelect = document.getElementById('devs-sort-select');
+        if (!sortSelect) return;
+
+        sortSelect.addEventListener('change', (e) => {
+            cache.ordering = e.target.value;
+            resetAndReload();
+        });
+    };
+
     return {
         init: async () => {
             initCache();
@@ -836,7 +956,8 @@ const devsGridSection = (() => {
                 // Cargar primer lote
                 const devs = await externalGames.fetchUrl('developers', { 
                     page: 1,
-                    page_size: 20
+                    page_size: 40,
+                    ordering: cache.ordering
                 }, { onlyResults: true });
 
                 if (Array.isArray(devs) && devs.length > 0) {
@@ -855,6 +976,7 @@ const devsGridSection = (() => {
                     cache.page = 2;
                     renderDevs(devsWithGames);
                     setupInfiniteScroll();
+                    setupSortListener();
                 } else {
                     cache.container.innerHTML = '<p>No se encontraron desarrolladores</p>';
                 }
