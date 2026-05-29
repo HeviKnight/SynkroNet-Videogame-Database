@@ -98,10 +98,6 @@ function createDeveloperCard(name = 'Developer Name', role = 'Lead Developer', i
             </button>
         </div>
     `;
-                </div>
-            </div>
-        </div>
-    `;
 }
 
 function createReleaseCard(title = 'Game Title', date = '31/10/2024', days = 0, hours = 0, minutes = 0, imageUrl = 'https://picsum.photos/400/160', gameData = {}) {
