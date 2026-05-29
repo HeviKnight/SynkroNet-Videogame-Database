@@ -585,33 +585,113 @@ const communitySection = (() => {
 })();
 
 // ============================================
-// GAMES GRID SECTION  
+// GAMES GRID SECTION WITH INFINITE SCROLL
 // ============================================
 
 const gamesGridSection = (() => {
     const cache = {
-        container: null
+        container: null,
+        games: [],
+        page: 1,
+        isLoading: false,
+        hasMore: true,
+        observer: null
     };
 
     const initCache = () => {
         cache.container = document.querySelector('.search-grid-games .games-grid');
     };
 
-    const createList = (titleName) => {
-        if (!cache.container) {
-            return;
-        }
-        for (let i = 0; i < 6; i++) {
-            cache.container.insertAdjacentHTML('beforeend', createGameCard(titleName));
+    const renderGames = (games) => {
+        if (!cache.container || !games || games.length === 0) return;
+
+        for (const game of games) {
+            const rating = game.rating ? parseFloat(game.rating).toFixed(1) : 'N/A';
+            const html = createGameCard(game.name, rating, game.background_image, game);
+            cache.container.insertAdjacentHTML('beforeend', html);
         }
     };
 
+    const loadMoreGames = async () => {
+        if (cache.isLoading || !cache.hasMore) return;
+        
+        cache.isLoading = true;
+        
+        try {
+            const games = await externalGames.fetchUrl('games', { 
+                page: cache.page,
+                page_size: 20,
+                ordering: '-rating'
+            }, { onlyResults: true });
+
+            if (!Array.isArray(games) || games.length === 0) {
+                cache.hasMore = false;
+                return;
+            }
+
+            cache.games = cache.games.concat(games);
+            renderGames(games);
+            cache.page += 1;
+        } catch (err) {
+            console.error('Error loading more games:', err);
+            cache.hasMore = false;
+        } finally {
+            cache.isLoading = false;
+        }
+    };
+
+    const setupInfiniteScroll = () => {
+        if (!cache.container) return;
+
+        // Crear elemento centinela
+        const sentinel = document.createElement('div');
+        sentinel.className = 'infinite-scroll-sentinel';
+        sentinel.style.height = '100px';
+        cache.container.appendChild(sentinel);
+
+        // Configurar Intersection Observer
+        cache.observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && cache.hasMore && !cache.isLoading) {
+                    loadMoreGames();
+                }
+            });
+        }, { 
+            root: null, 
+            rootMargin: '200px', 
+            threshold: 0 
+        });
+
+        cache.observer.observe(sentinel);
+    };
+
     return {
-        init: () => {
+        init: async () => {
             initCache();
-            if (cache.container) {
-                cache.container.innerHTML = '';
-                createList('GamesList');
+            if (!cache.container) return;
+
+            cache.container.innerHTML = '<p class="loading">Cargando juegos...</p>';
+
+            try {
+                // Cargar primer lote
+                const games = await externalGames.fetchUrl('games', { 
+                    page: 1,
+                    page_size: 20,
+                    ordering: '-rating'
+                }, { onlyResults: true });
+
+                if (Array.isArray(games) && games.length > 0) {
+                    cache.container.innerHTML = '';
+                    cache.games = games;
+                    cache.page = 2;
+                    renderGames(games);
+                    setupInfiniteScroll();
+                } else {
+                    cache.container.innerHTML = '<p>No se encontraron juegos</p>';
+                }
+            } catch (err) {
+                console.error('Error loading games grid:', err);
+                cache.container.innerHTML = '<p>Error al cargar los juegos</p>';
             }
         }
     };
@@ -651,33 +731,136 @@ const newsGridSection = (() => {
 })();
 
 // ============================================
-// DEVS GRID SECTION  
+// DEVS GRID SECTION WITH INFINITE SCROLL
 // ============================================
 
 const devsGridSection = (() => {
     const cache = {
-        container: null
+        container: null,
+        devs: [],
+        page: 1,
+        isLoading: false,
+        hasMore: true,
+        observer: null
     };
 
     const initCache = () => {
         cache.container = document.querySelector('#devs-grid');
     };
 
-    const createList = () => {
-        if (!cache.container) {
-            return;
-        }
-        for (let i = 0; i < 6; i++) {
-            cache.container.insertAdjacentHTML('beforeend', createDeveloperCard('Developer ' + (i + 1), 'Game Designer'));
+    const renderDevs = (devs) => {
+        if (!cache.container || !devs || devs.length === 0) return;
+
+        for (const dev of devs) {
+            const name = dev.name || 'Unknown';
+            const role = dev.slug || 'Developer';
+            const imageUrl = dev.image_background || 'https://picsum.photos/150/200';
+            const featuredGameTitle = (dev.games && dev.games[0]) ? dev.games[0].name : '';
+            const featuredGameImage = (dev.games && dev.games[0]) ? dev.games[0].background_image : '';
+            
+            const html = createDeveloperCard(name, role, imageUrl, featuredGameTitle, featuredGameImage, dev);
+            cache.container.insertAdjacentHTML('beforeend', html);
         }
     };
 
+    const loadMoreDevs = async () => {
+        if (cache.isLoading || !cache.hasMore) return;
+        
+        cache.isLoading = true;
+        
+        try {
+            const devs = await externalGames.fetchUrl('developers', { 
+                page: cache.page,
+                page_size: 20
+            }, { onlyResults: true });
+
+            if (!Array.isArray(devs) || devs.length === 0) {
+                cache.hasMore = false;
+                return;
+            }
+
+            // Obtener juegos para cada desarrollador
+            const devsWithGames = await Promise.all(devs.map(async (dev) => {
+                try {
+                    const games = await externalGames.fetchUrl(`developers/${dev.id}/games`, { page_size: 1 }, { onlyResults: true });
+                    return { ...dev, games: Array.isArray(games) ? games : [] };
+                } catch (e) {
+                    return { ...dev, games: [] };
+                }
+            }));
+
+            cache.devs = cache.devs.concat(devsWithGames);
+            renderDevs(devsWithGames);
+            cache.page += 1;
+        } catch (err) {
+            console.error('Error loading more developers:', err);
+            cache.hasMore = false;
+        } finally {
+            cache.isLoading = false;
+        }
+    };
+
+    const setupInfiniteScroll = () => {
+        if (!cache.container) return;
+
+        // Crear elemento centinela
+        const sentinel = document.createElement('div');
+        sentinel.className = 'infinite-scroll-sentinel';
+        sentinel.style.height = '100px';
+        cache.container.appendChild(sentinel);
+
+        // Configurar Intersection Observer
+        cache.observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && cache.hasMore && !cache.isLoading) {
+                    loadMoreDevs();
+                }
+            });
+        }, { 
+            root: null, 
+            rootMargin: '200px', 
+            threshold: 0 
+        });
+
+        cache.observer.observe(sentinel);
+    };
+
     return {
-        init: () => {
+        init: async () => {
             initCache();
-            if (cache.container) {
-                cache.container.innerHTML = '';
-                createList();
+            if (!cache.container) return;
+
+            cache.container.innerHTML = '<p class="loading">Cargando desarrolladores...</p>';
+
+            try {
+                // Cargar primer lote
+                const devs = await externalGames.fetchUrl('developers', { 
+                    page: 1,
+                    page_size: 20
+                }, { onlyResults: true });
+
+                if (Array.isArray(devs) && devs.length > 0) {
+                    // Obtener juegos para cada desarrollador
+                    const devsWithGames = await Promise.all(devs.map(async (dev) => {
+                        try {
+                            const games = await externalGames.fetchUrl(`developers/${dev.id}/games`, { page_size: 1 }, { onlyResults: true });
+                            return { ...dev, games: Array.isArray(games) ? games : [] };
+                        } catch (e) {
+                            return { ...dev, games: [] };
+                        }
+                    }));
+
+                    cache.container.innerHTML = '';
+                    cache.devs = devsWithGames;
+                    cache.page = 2;
+                    renderDevs(devsWithGames);
+                    setupInfiniteScroll();
+                } else {
+                    cache.container.innerHTML = '<p>No se encontraron desarrolladores</p>';
+                }
+            } catch (err) {
+                console.error('Error loading developers grid:', err);
+                cache.container.innerHTML = '<p>Error al cargar los desarrolladores</p>';
             }
         }
     };

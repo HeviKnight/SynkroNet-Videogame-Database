@@ -124,11 +124,12 @@ function createReleaseCard(title = 'Game Title', date = '31/10/2024', days = 0, 
     const actionUrl = window.GAME_FILE_URL || './paginas/game-file.php';
     
     return `
-        <form id="${formId}" method="POST" action="${actionUrl}" style="display: none;">
-            <input type="hidden" name="game_data" value='${dataStr.replace(/'/g, "&apos;")}'>
-        </form>
-        <button type="submit" form="${formId}" style="background: none; border: none; padding: 0; cursor: pointer; display: block; width: 100%;" class="col-lg-4 col-md-6">
-            <div class="card-upcoming">
+        <div class="col-lg-4 col-md-6">
+            <form id="${formId}" method="POST" action="${actionUrl}" style="display: none;">
+                <input type="hidden" name="game_data" value='${dataStr.replace(/'/g, "&apos;")}'>
+            </form>
+            <button type="submit" form="${formId}" style="background: none; border: none; padding: 0; cursor: pointer; display: block; width: 100%;">
+                <div class="card-upcoming">
                 <img src="${imageUrl}" alt="${title}">
                 <div>
                     <span>${date}</span>
@@ -149,7 +150,8 @@ function createReleaseCard(title = 'Game Title', date = '31/10/2024', days = 0, 
                     <p>${title}</p>
                 </div>
             </div>
-        </button>
+            </button>
+        </div>
     `;
 }
 
