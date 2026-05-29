@@ -1041,19 +1041,26 @@ p{
     &>div:first-child{
         display: flex;
         justify-content: space-between;
-        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://picsum.photos/1000/') center/cover;
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), var(--game-bg-image, url('https://picsum.photos/1000/')) center/cover;
         margin-bottom: 80px;
         padding: 0 60px;
         border-radius: var(--border-radius);
 
-        &>img:first-child, .info{
+        &>img:first-child{
             position: relative;
             top: 60px;
+            height: 300px;
+            width: 225px;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
         }
 
         .info{
+            position: relative;
+            top: 60px;
             display: flex;
-            flex-direction: column;
+            flex-direction: column-reverse;
             justify-content: space-between;
         }
     }

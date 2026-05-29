@@ -38,6 +38,11 @@ if (is_array($developers) && count($developers) > 0) {
     $devsStr = implode(', ', array_filter($devNames));
 }
 ?>
+    <style>
+        :root {
+            --game-bg-image: url('<?php echo htmlspecialchars($gameImage); ?>');
+        }
+    </style>
     <script>
         window.GAME_FILE_URL = './game-file.php';
     </script>
@@ -47,10 +52,9 @@ if (is_array($developers) && count($developers) > 0) {
         
         <!-- HERO SECTION -->
         <section class="section-hero-gamefile">
-            <div>
+            <div style="background-image: url('<?php echo htmlspecialchars($gameImage); ?>');">
                 <img src="<?php echo htmlspecialchars($gameImage); ?>" alt="<?php echo htmlspecialchars($gameName); ?> Cover">
                 <div class="info">
-                    <img src="<?php echo htmlspecialchars($gameImage); ?>" alt="<?php echo htmlspecialchars($gameName); ?> Cover">
                     <div>
                         <a href="#" class="btn btn-dark">
                             <i class="bi bi-pencil"></i>
