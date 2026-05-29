@@ -38,8 +38,11 @@ if (is_array($developers) && count($developers) > 0) {
     $devsStr = implode(', ', array_filter($devNames));
 }
 ?>
+    <script>
+        window.GAME_FILE_URL = './game-file.php';
+    </script>
 
-<main id="home">
+    <main id="home">
     <section id="main-content" class="main-content">
         
         <!-- HERO SECTION -->

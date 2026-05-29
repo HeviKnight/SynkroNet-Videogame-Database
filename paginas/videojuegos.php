@@ -4,8 +4,11 @@ $base_url = str_replace('/paginas', '', $base_url);
 include_once('../componentes/sidebar.php');
 include_once('../componentes/filter-component.php');
 ?>
+    <script>
+        window.GAME_FILE_URL = './game-file.php';
+    </script>
 
-<!-- HEADER WITH GRADIENT TITLE -->
+    <!-- HEADER WITH GRADIENT TITLE -->
 <header class="header-games">
     <h1 class="header-games-title">GAMES</h1>
 </header>

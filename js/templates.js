@@ -22,8 +22,11 @@ function createGameCard(title = 'Título', score = 5, imageUrl = 'https://picsum
         developers: gameData.developers || []
     });
     
+    // Usar la URL configurada globalmente o fallback
+    const actionUrl = window.GAME_FILE_URL || './paginas/game-file.php';
+    
     return `
-        <form id="${formId}" method="POST" action="/SynkroNET/paginas/game-file.php" style="display: none;">
+        <form id="${formId}" method="POST" action="${actionUrl}" style="display: none;">
             <input type="hidden" name="game_data" value='${dataStr.replace(/'/g, "&apos;")}'>
         </form>
         <div class="col-lg-3 col-sm-6">
@@ -89,8 +92,11 @@ function createReleaseCard(title = 'Game Title', date = '31/10/2024', days = 0, 
         developers: gameData.developers || []
     });
     
+    // Usar la URL configurada globalmente o fallback
+    const actionUrl = window.GAME_FILE_URL || './paginas/game-file.php';
+    
     return `
-        <form id="${formId}" method="POST" action="/SynkroNET/paginas/game-file.php" style="display: none;">
+        <form id="${formId}" method="POST" action="${actionUrl}" style="display: none;">
             <input type="hidden" name="game_data" value='${dataStr.replace(/'/g, "&apos;")}'>
         </form>
         <button type="submit" form="${formId}" style="background: none; border: none; padding: 0; cursor: pointer; display: block; width: 100%;" class="col-lg-4 col-md-6">

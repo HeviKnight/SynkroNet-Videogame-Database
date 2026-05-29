@@ -2,6 +2,9 @@
 $base_url = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
 include_once("componentes/sidebar.php");
 ?>
+    <script>
+        window.GAME_FILE_URL = './paginas/game-file.php';
+    </script>
 
     <main id="home">
         <section id="main-content" class="main-content">
