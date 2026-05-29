@@ -109,6 +109,7 @@ const heroSection = (() => {
         const title = heroSection.querySelector('.hero-content > div:first-child h1');
         if (title) {
             title.textContent = game.name || 'Unknown';
+            title.style.color = white;
         }
 
         // Description
