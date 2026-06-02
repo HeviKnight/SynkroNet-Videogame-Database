@@ -1,0 +1,17 @@
+[database]
+; Configuración de la Base de Datos
+host = localhost
+port = 3306
+name = synkrodb
+user = root
+password = 
+
+[session]
+; Configuración de sesiones
+timeout = 3600
+cookie_name = SYNKRO_ID
+
+[app]
+; Configuración de la aplicación
+name = SynkroNET
+debug = false

@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,6 +16,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo $base_url; ?>/css/styles.css" />
+    
+    <!-- Estado de autenticación para JavaScript -->
+    <script>
+        window.isAuthenticated = <?php echo (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) ? 'true' : 'false'; ?>;
+        window.currentUser = <?php echo isset($_SESSION['user_id']) ? json_encode(['id' => $_SESSION['user_id'], 'username' => $_SESSION['username'] ?? 'Usuario']) : 'null'; ?>;
+    </script>
 </head>
 
 <body>
@@ -63,9 +72,9 @@
                 <i class="bi bi-calendar-event"></i>
                 <span>Noticias</span>
             </a>
-            <a href="<?php echo $base_url; ?>/paginas/contribuir.php" class="sidebar-item" data-page="contribuir">
-                <i class="bi bi-newspaper"></i>
-                <span>Contribuir</span>
+            <a href="<?php echo $base_url; ?>/panel.php" class="sidebar-item" data-page="panel">
+                <i class="bi bi-person-circle"></i>
+                <span>Panel</span>
             </a>
         </nav>
 
@@ -86,10 +95,10 @@
         <div class="sidebar-footer">
             <!-- ESTADO: NO AUTENTICADO (visible por defecto) -->
             <div class="sidebar-footer-guest" id="footerGuest">
-                <a href="#" class="btn btn-dark" id="btnLogin" title="Iniciar Sesión">
+                <a href="<?php echo $base_url; ?>/login.php" class="btn btn-dark" id="btnLogin" title="Iniciar Sesión">
                     Iniciar Sesión
                 </a>
-                <a href="#" class="btn btn-primary" title="Registrarse">
+                <a href="<?php echo $base_url; ?>/register.php" class="btn btn-primary" title="Registrarse">
                     Registrarse
                 </a>
             </div>
@@ -103,11 +112,13 @@
                         <div></div>
                     </div>
                 </div>
-                <div class="user-profile" id="btnLogout">
-                    <img src="https://ui-avatars.com/api/?name=Usuario&background=00CDDB&color=fff" alt="Avatar" class="user-avatar">
-                    <p>Nicolás</p>
-                    <a href="#" title="Ajustes">
-                        <i class="bi bi-gear-fill"></i>
+                <div class="user-profile">
+                    <a href="<?php echo $base_url; ?>/panel.php" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 0; width: 100%; padding: 8px; border-radius: var(--border-radius-sm); transition: all var(--transition-fast);" title="Ver Panel">
+                        <img src="https://ui-avatars.com/api/?name=Usuario&background=00CDDB&color=fff" alt="Avatar" class="user-avatar">
+                        <p id="userNameDisplay" style="margin: 0;">Nicolás</p>
+                    </a>
+                    <a href="<?php echo $base_url; ?>/logout.php" id="btnLogout" title="Cerrar Sesión" style="margin-left: auto;">
+                        <i class="bi bi-box-arrow-right"></i>
                     </a>
                 </div>
             </div>

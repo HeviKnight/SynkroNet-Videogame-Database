@@ -50,14 +50,33 @@ const SidebarModule = (() => {
      */
     const setActivePage = () => {
         const currentPath = window.location.pathname;
+        const cleanPath = currentPath.replace(/\/$/, ''); // Elimina trailing slash
+        
+        // Obtener la ruta base del sitio (ej: /SynkroNET)
+        const logoLink = document.querySelector('.sidebar-logo');
+        const logoHref = logoLink?.getAttribute('href') || '';
+        const basePath = logoHref.replace(/index\.php$/, '').replace(/\/$/, '');
         
         cache.sidebarItems.forEach((item) => {
             const href = item.getAttribute('href');
             if (!href) return;
 
-            // Comparación mejorada: verificar coincidencia exacta
-            const isActive = currentPath.includes(href) && 
-                           (href === currentPath || href === currentPath.replace(/\/$/, ''));
+            let isActive = false;
+
+            // Caso 1: Si estamos exactamente en la raíz del sitio
+            // El cleanPath será la ruta base ej: /SynkroNET
+            // Y el href será base + /index.php ej: /SynkroNET/index.php
+            if (cleanPath === basePath && href.includes('index.php')) {
+                isActive = true;
+            }
+            // Caso 2: Comparación exacta o casi exacta del path
+            else if (cleanPath === href || cleanPath === href.replace(/\/$/, '')) {
+                isActive = true;
+            }
+            // Caso 3: El path actual incluye el href (para sub-rutas)
+            else if (currentPath.includes(href) && !href.includes('index.php')) {
+                isActive = true;
+            }
 
             if (isActive) {
                 item.classList.add('active');
@@ -172,15 +191,33 @@ const SidebarModule = (() => {
     };
 
     /**
+     * Inicializa el estado de autenticación al cargar la página
+     * Verifica window.isAuthenticated (definida en sidebar.php)
+     * @returns {void}
+     */
+    const initAuthState = () => {
+        if (window.isAuthenticated === true) {
+            showAuthFooter();
+            // Actualizar nombre de usuario si existe
+            if (window.currentUser && window.currentUser.username) {
+                const userNameDisplay = document.getElementById('userNameDisplay');
+                if (userNameDisplay) {
+                    userNameDisplay.textContent = window.currentUser.username;
+                }
+            }
+        } else {
+            showGuestFooter();
+        }
+    };
+
+    /**
      * Configura listeners para botones de autenticación
      * @returns {void}
      */
     const setupAuthToggleListeners = () => {
-        // Login button
+        // Login button - permite navegación normal a login.php
         if (cache.btnLogin) {
             cache.btnLogin.addEventListener('click', (e) => {
-                e.preventDefault();
-                
                 // Si sidebar está colapsado, expandirlo
                 if (cache.sidebar.classList.contains('collapsed')) {
                     cache.sidebar.classList.remove('collapsed');
@@ -190,16 +227,24 @@ const SidebarModule = (() => {
                     }
                 }
                 
-                // Cambiar a estado autenticado
-                showAuthFooter();
+                // Cerrar sidebar en mobile antes de navegar
+                if (window.innerWidth <= 768) {
+                    cache.sidebar.classList.remove('active');
+                    cache.sidebarOverlay?.classList.remove('active');
+                }
+                // Permitir navegación normal a login.php
             });
         }
 
-        // Logout button / perfil
+        // Logout button - permite navegación normal a logout.php
         if (cache.btnLogout) {
             cache.btnLogout.addEventListener('click', (e) => {
-                e.preventDefault();
-                showGuestFooter();
+                // Cerrar sidebar en mobile antes de navegar
+                if (window.innerWidth <= 768) {
+                    cache.sidebar.classList.remove('active');
+                    cache.sidebarOverlay?.classList.remove('active');
+                }
+                // Permitir navegación normal a logout.php
             });
         }
     };
@@ -241,22 +286,25 @@ const SidebarModule = (() => {
         // 2. Detectar página activa
         setActivePage();
 
-        // 3. Setup Desktop listeners
+        // 3. Inicializar estado de autenticación
+        initAuthState();
+
+        // 4. Setup Desktop listeners
         setupCollapseBtnListener();
 
-        // 4. Setup Mobile listeners
+        // 5. Setup Mobile listeners
         setupToggleBtnListener();
         setupOverlayClickListener();
         setupSidebarItemsCloseListener();
         setupResizeListener();
 
-        // 5. Setup Auth listeners (consolidado)
+        // 6. Setup Auth listeners (consolidado)
         setupAuthToggleListeners();
 
-        // 6. Setup Search expand listener
+        // 7. Setup Search expand listener
         setupSearchExpandListener();
 
-        // 7. Marcar como inicializado
+        // 8. Marcar como inicializado
         cache.initialized = true;
 
     };

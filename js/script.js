@@ -37,18 +37,14 @@ const externalGames = (() => {
         try {
             const basePath = getBasePath();
             const apiUrl = `${basePath}/api/getApiKey.php`;
-            console.log('Intentando cargar API key desde:', apiUrl);
             const res = await fetch(apiUrl);
             const json = await res.json();
             if (json && json.success && json.apiKey) {
                 apiKey = json.apiKey;
-                console.log('API key cargada exitosamente');
                 return apiKey;
             }
-            console.error('No se obtuvo apiKey:', json && json.error);
             return null;
         } catch (err) {
-            console.error('Error cargando apiKey:', err);
             return null;
         }
     };
